@@ -108,14 +108,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
             <span className="material-icons text-xl">table_restaurant</span>
             {!isCollapsed && <span className="whitespace-nowrap">Pilih Meja / Table</span>}
           </Link>
-          <Link 
-            to="/pos" 
-            className={`flex items-center rounded-xl transition-all py-3 ${location.pathname === '/pos' ? 'bg-brand-highlight text-brand-600 dark:text-brand-300 border border-brand-highlight font-bold' : 'border border-transparent text-text-muted hover:bg-surface-dark hover:text-text-main font-medium'} ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-4'}`}
-            title={isCollapsed ? "Kasir (POS)" : ""}
-          >
-            <span className="material-icons text-xl">point_of_sale</span>
-            {!isCollapsed && <span className="whitespace-nowrap">Kasir (POS)</span>}
-          </Link>
+
           
           {(user?.role === 'admin' || user?.role === 'kitchen') && (
             <Link 

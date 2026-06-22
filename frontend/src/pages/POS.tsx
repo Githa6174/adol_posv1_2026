@@ -38,6 +38,12 @@ export function POS() {
     itemService.getCategories().then(setCategories).catch(console.error);
   }, []);
 
+  useEffect(() => {
+    if (!selectedTable) {
+      navigate('/tables');
+    }
+  }, [selectedTable, navigate]);
+
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     setIsDown(true);
     setStartX(e.pageX - e.currentTarget.offsetLeft);
@@ -178,6 +184,12 @@ export function POS() {
                 <div className="bg-brand-50 text-brand-700 border border-brand-200 px-4 py-1.5 rounded-lg font-bold flex items-center gap-2">
                   <span className="material-icons text-base">table_restaurant</span> {selectedTable.table_number} <span className="text-brand-300 mx-1">|</span> {selectedTable.pax} Pax
                 </div>
+                <button 
+                  onClick={() => navigate('/tables')}
+                  className="bg-surface hover:bg-surface-dark text-text-muted hover:text-text-main border border-border px-4 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-colors cursor-pointer text-xs shadow-sm"
+                >
+                  <span className="material-icons text-base">arrow_back</span> Kembali ke Meja
+                </button>
               </div>
             )}
           </div>
