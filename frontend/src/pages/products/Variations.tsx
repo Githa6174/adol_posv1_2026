@@ -51,7 +51,7 @@ export function Variations() {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-8 h-full overflow-y-auto">
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-4xl font-bold text-text-main mb-2">Variations</h1>
