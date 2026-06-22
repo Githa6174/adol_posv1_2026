@@ -36,7 +36,7 @@ export function ListProducts() {
     <div className="p-8">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-4xl font-bold text-white mb-2">List Products</h1>
+          <h1 className="text-4xl font-bold text-text-main mb-2">List Products</h1>
           <p className="text-text-muted">Kelola seluruh produk, stok, dan harga.</p>
         </div>
         <Link 
@@ -47,10 +47,10 @@ export function ListProducts() {
         </Link>
       </div>
       
-      <div className="glass rounded-3xl p-6 border border-white/10 overflow-x-auto">
-        <table className="w-full text-left text-white whitespace-nowrap">
+      <div className="bg-surface rounded-3xl p-6 border border-border overflow-x-auto">
+        <table className="w-full text-left text-text-main whitespace-nowrap">
           <thead>
-            <tr className="border-b border-white/10">
+            <tr className="border-b border-border">
               <th className="py-4 font-semibold text-text-muted">Produk</th>
               <th className="py-4 font-semibold text-text-muted">Kategori</th>
               <th className="py-4 font-semibold text-text-muted">Tipe</th>
@@ -69,10 +69,10 @@ export function ListProducts() {
               </tr>
             ) : (
               items.map(item => (
-                <tr key={item.id} className="border-b border-white/5 hover:bg-white/5">
+                <tr key={item.id} className="border-b border-border hover:bg-surface-dark transition-colors">
                   <td className="py-4">
                     <div className="font-bold">{item.name}</div>
-                    <div className="text-xs text-brand-300">SKU: {item.sku}</div>
+                    <div className="text-xs text-brand-600 dark:text-brand-300">SKU: {item.sku}</div>
                   </td>
                   <td className="py-4">{item.category?.name || '-'}</td>
                   <td className="py-4 capitalize">{item.type}</td>
@@ -85,12 +85,12 @@ export function ListProducts() {
                       ? item.variations?.reduce((sum:any, v:any) => sum + (v.stock||0), 0)
                       : (item.manage_stock ? item.current_stock : 'N/A')}
                   </td>
-                  <td className="py-4 font-bold text-green-400">
+                  <td className="py-4 font-bold text-green-600 dark:text-green-400">
                     Rp {item.price_level_1?.toLocaleString('id-ID') || 0}
                   </td>
                   <td className="py-4 text-right">
-                    <Link to={`/products/edit/${item.id}`} className="text-blue-400 hover:text-blue-300 mr-4">Edit</Link>
-                    <button onClick={() => handleDelete(item.id)} className="text-red-400 hover:text-red-300">Delete</button>
+                    <Link to={`/products/edit/${item.id}`} className="text-blue-500 hover:underline mr-4 font-medium">Edit</Link>
+                    <button onClick={() => handleDelete(item.id)} className="text-red-500 hover:underline font-medium">Delete</button>
                   </td>
                 </tr>
               ))

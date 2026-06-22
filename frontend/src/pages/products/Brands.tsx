@@ -51,7 +51,7 @@ export function Brands() {
     <div className="p-8">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-4xl font-bold text-white mb-2">Brands (Merek)</h1>
+          <h1 className="text-4xl font-bold text-text-main mb-2">Brands (Merek)</h1>
           <p className="text-text-muted">Kelola merek produk untuk mempermudah filter</p>
         </div>
         <button 
@@ -62,10 +62,10 @@ export function Brands() {
         </button>
       </div>
 
-      <div className="glass rounded-3xl p-6 border border-white/10">
-        <table className="w-full text-left text-white">
+      <div className="bg-surface rounded-3xl p-6 border border-border">
+        <table className="w-full text-left text-text-main">
           <thead>
-            <tr className="border-b border-white/10">
+            <tr className="border-b border-border">
               <th className="py-4 font-semibold text-text-muted">Name</th>
               <th className="py-4 font-semibold text-text-muted">Description</th>
               <th className="py-4 font-semibold text-text-muted text-right">Aksi</th>
@@ -73,12 +73,12 @@ export function Brands() {
           </thead>
           <tbody>
             {brands.map(brand => (
-              <tr key={brand.id} className="border-b border-white/5 hover:bg-white/5">
+              <tr key={brand.id} className="border-b border-border hover:bg-surface-dark transition-colors">
                 <td className="py-4 font-medium">{brand.name}</td>
                 <td className="py-4 text-text-muted">{brand.description || '-'}</td>
-                <td className="py-4 text-right">
-                  <button onClick={() => { setFormData(brand); setShowModal(true); }} className="text-blue-400 hover:text-blue-300 mr-4">Edit</button>
-                  <button onClick={() => handleDelete(brand.id)} className="text-red-400 hover:text-red-300">Delete</button>
+                <td className="py-4 text-right font-medium">
+                  <button onClick={() => { setFormData(brand); setShowModal(true); }} className="text-blue-500 hover:underline mr-4">Edit</button>
+                  <button onClick={() => handleDelete(brand.id)} className="text-red-500 hover:underline">Delete</button>
                 </td>
               </tr>
             ))}
@@ -90,9 +90,9 @@ export function Brands() {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="glass rounded-3xl p-8 w-full max-w-md border border-white/10 shadow-2xl">
-            <h2 className="text-2xl font-bold text-white mb-6">{formData.id ? 'Edit Brand' : 'Tambah Brand'}</h2>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-surface rounded-3xl p-8 w-full max-w-md border border-border shadow-2xl">
+            <h2 className="text-2xl font-bold text-text-main mb-6">{formData.id ? 'Edit Brand' : 'Tambah Brand'}</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-text-muted mb-2">Name</label>
@@ -104,7 +104,7 @@ export function Brands() {
               </div>
               <div className="flex gap-4 pt-4">
                 <button type="button" onClick={() => setShowModal(false)} className="flex-1 btn-secondary">Batal</button>
-                <button type="submit" className="flex-1 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl">Simpan</button>
+                <button type="submit" className="flex-1 btn-primary py-3">Simpan</button>
               </div>
             </form>
           </div>

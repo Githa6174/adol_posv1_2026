@@ -31,7 +31,7 @@ export function LoginForm() {
   return (
     <div className="w-full max-w-md glass-card p-10">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-brand-400 to-purple-400 bg-clip-text text-transparent">
+        <h1 className="text-3xl font-extrabold tracking-tight text-brand-600">
           ADOL<span className="text-text-main font-light text-xl ml-1">POS</span>
         </h1>
         <p className="text-text-muted text-sm mt-2">Masuk ke sistem point of sale</p>

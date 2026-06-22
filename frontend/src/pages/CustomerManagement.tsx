@@ -93,7 +93,7 @@ export function CustomerManagement() {
     <div className="p-8 h-full flex flex-col overflow-hidden">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-400">
+          <h1 className="text-3xl font-extrabold text-brand-600">
             Manajemen Pelanggan (CRM)
           </h1>
           <p className="text-text-muted mt-1">Kelola data pelanggan dan loyalty poin.</p>
@@ -111,7 +111,7 @@ export function CustomerManagement() {
       </div>
 
       <div className="flex-1 glass-card overflow-hidden flex flex-col">
-        <div className="p-4 border-b border-white/5">
+        <div className="p-4 border-b border-border">
           <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
             <input 
@@ -119,7 +119,7 @@ export function CustomerManagement() {
               placeholder="Cari nama atau no telepon..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-surface-dark border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-white focus:outline-none focus:border-brand-500"
+              className="w-full bg-background border border-border rounded-xl pl-10 pr-4 py-2.5 text-text-main focus:outline-none focus:border-brand-500"
             />
           </div>
         </div>
@@ -130,7 +130,7 @@ export function CustomerManagement() {
           ) : (
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="text-text-muted text-sm border-b border-white/10">
+                <tr className="text-text-muted text-sm border-b border-border">
                   <th className="pb-3 px-4 font-medium">Nama Pelanggan</th>
                   <th className="pb-3 px-4 font-medium">No. Telepon</th>
                   <th className="pb-3 px-4 font-medium text-center">Membership</th>
@@ -140,14 +140,14 @@ export function CustomerManagement() {
               </thead>
               <tbody>
                 {customers.map((c: any) => (
-                  <tr key={c.id} className="border-b border-white/5 hover:bg-white/5 transition-colors group">
-                    <td className="py-4 px-4 font-bold text-white">{c.name}</td>
+                  <tr key={c.id} className="border-b border-border hover:bg-surface-dark transition-colors group">
+                    <td className="py-4 px-4 font-bold text-text-main">{c.name}</td>
                     <td className="py-4 px-4 text-sm text-text-main">{c.phone || '-'}</td>
                     <td className="py-4 px-4 text-center">
                       {c.is_member ? (
-                        <span className="px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded-lg font-medium border border-yellow-500/20">Member</span>
+                        <span className="px-2 py-1 bg-yellow-500/20 text-yellow-600 dark:text-yellow-400 text-xs rounded-lg font-medium border border-yellow-500/20">Member</span>
                       ) : (
-                        <span className="px-2 py-1 bg-white/5 text-text-muted text-xs rounded-lg font-medium">Regular</span>
+                        <span className="px-2 py-1 bg-surface-dark/40 text-text-muted text-xs rounded-lg font-medium border border-border">Regular</span>
                       )}
                     </td>
                     <td className="py-4 px-4 text-center">
@@ -187,10 +187,10 @@ export function CustomerManagement() {
       {/* Modal Add/Edit Customer */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="glass-card w-full max-w-md overflow-hidden flex flex-col">
-            <div className="p-5 border-b border-white/10 bg-surface-dark/50">
-              <h2 className="text-xl font-bold flex items-center gap-2">
-                <Users className="text-orange-400" /> {editingId ? 'Edit Pelanggan' : 'Tambah Pelanggan'}
+          <div className="bg-surface rounded-2xl w-full max-w-md overflow-hidden flex flex-col border border-border shadow-2xl">
+            <div className="p-5 border-b border-border bg-surface-dark/40">
+              <h2 className="text-xl font-bold flex items-center gap-2 text-text-main">
+                <Users className="text-orange-500 dark:text-orange-400" /> {editingId ? 'Edit Pelanggan' : 'Tambah Pelanggan'}
               </h2>
             </div>
             
@@ -201,7 +201,7 @@ export function CustomerManagement() {
                   type="text" required
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  className="w-full bg-surface-dark border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-brand-500"
+                  className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-text-main focus:outline-none focus:border-brand-500"
                 />
               </div>
               <div>
@@ -210,7 +210,7 @@ export function CustomerManagement() {
                   type="text"
                   value={formData.phone}
                   onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                  className="w-full bg-surface-dark border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-brand-500"
+                  className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-text-main focus:outline-none focus:border-brand-500"
                 />
               </div>
               <div>
@@ -219,7 +219,7 @@ export function CustomerManagement() {
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({...formData, email: e.target.value})}
-                  className="w-full bg-surface-dark border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-brand-500"
+                  className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-text-main focus:outline-none focus:border-brand-500"
                 />
               </div>
               <div className="flex items-center gap-3 pt-2">
@@ -228,9 +228,9 @@ export function CustomerManagement() {
                   id="is_member"
                   checked={formData.is_member}
                   onChange={(e) => setFormData({...formData, is_member: e.target.checked})}
-                  className="w-5 h-5 rounded border-white/10 bg-surface-dark text-brand-500 focus:ring-brand-500 focus:ring-offset-surface-dark"
+                  className="w-5 h-5 rounded border-border bg-background text-brand-500 focus:ring-brand-500 focus:ring-offset-background"
                 />
-                <label htmlFor="is_member" className="text-sm font-medium text-white">
+                <label htmlFor="is_member" className="text-sm font-medium text-text-main">
                   Daftarkan sebagai Member Aktif
                 </label>
               </div>
@@ -242,14 +242,14 @@ export function CustomerManagement() {
                     type="number"
                     value={formData.points}
                     onChange={(e) => setFormData({...formData, points: parseInt(e.target.value) || 0})}
-                    className="w-full bg-surface-dark border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-brand-500"
+                    className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-text-main focus:outline-none focus:border-brand-500"
                   />
                 </div>
               )}
               
               <div className="mt-8 flex gap-3">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 py-2.5 rounded-xl border border-white/10 text-white hover:bg-white/5">Batal</button>
-                <button type="submit" className="flex-1 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-400 text-white font-medium">Simpan</button>
+                <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 btn-secondary py-2.5">Batal</button>
+                <button type="submit" className="flex-1 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-medium">Simpan</button>
               </div>
             </form>
           </div>

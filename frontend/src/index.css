@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    /* DEFAULT THEME: Modern Dark/Slate with Neon Blue Accent */
+    /* DEFAULT THEME: Modern Clean Light (SaaS Aesthetic) */
     --color-brand-50: #eff6ff;
     --color-brand-100: #dbeafe;
     --color-brand-200: #bfdbfe;
@@ -18,27 +18,40 @@
     --color-brand-800: #1e40af;
     --color-brand-900: #1e3a8a;
 
-    --color-background: #0f172a; /* Slate 900 */
-    --color-surface-light: rgba(30, 41, 59, 0.7); /* Slate 800 with opacity for glassmorphism */
-    --color-surface: #1e293b; /* Slate 800 */
-    --color-surface-dark: #0f172a;
-    --color-border: rgba(255, 255, 255, 0.1);
-    
-    --color-text-main: #f8fafc;
-    --color-text-muted: #94a3b8;
-    --color-text-inverse: #020617;
-  }
-
-  .theme-light {
     --color-background: #f8fafc; /* Slate 50 */
-    --color-surface-light: rgba(255, 255, 255, 0.8);
+    --color-surface-light: #ffffff;
     --color-surface: #ffffff;
     --color-surface-dark: #f1f5f9;
-    --color-border: rgba(0, 0, 0, 0.1);
+    --color-border: #e2e8f0; /* Slate 200 */
     
     --color-text-main: #0f172a; /* Slate 900 */
-    --color-text-muted: #64748b; /* Slate 500 */
+    --color-text-muted: #475569; /* Slate 600 */
     --color-text-inverse: #ffffff;
+  }
+
+  .theme-dark {
+    /* Brand Colors adjusted for dark mode */
+    --color-brand-50: #0f172a;
+    --color-brand-100: #1e293b;
+    --color-brand-200: #1d4ed8;
+    --color-brand-300: #3b82f6;
+    --color-brand-400: #60a5fa;
+    --color-brand-500: #3b82f6;
+    --color-brand-600: #2563eb;
+    --color-brand-700: #1d4ed8;
+    --color-brand-800: #1e40af;
+    --color-brand-900: #1e3a8a;
+
+    /* Spotify-Style Dark Theme */
+    --color-background: #121212;
+    --color-surface-light: #282828;
+    --color-surface: #181818;
+    --color-surface-dark: #0a0a0a;
+    --color-border: #282828;
+    
+    --color-text-main: #ffffff;
+    --color-text-muted: #b3b3b3;
+    --color-text-inverse: #121212;
   }
 
   body {
@@ -48,22 +61,19 @@
 
 @layer utilities {
   .glass {
-    @apply bg-surface-light backdrop-blur-md border border-[var(--color-border)] shadow-xl;
+    @apply bg-surface border border-[var(--color-border)] shadow-sm;
   }
   .glass-card {
-    @apply glass rounded-2xl transition-all duration-300;
-  }
-  .glass-card:hover {
-    @apply border-[var(--color-border)] shadow-2xl transform -translate-y-1;
+    @apply glass rounded-2xl transition-all duration-200 hover:shadow-md hover:border-brand-300;
   }
   .btn-primary {
-    @apply bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl transition-colors shadow-lg shadow-brand-500/30;
+    @apply bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-xl transition-colors shadow-sm active:scale-95 flex items-center justify-center;
   }
   .btn-secondary {
-    @apply bg-surface hover:bg-surface-light text-text-main font-bold border border-[var(--color-border)] rounded-xl transition-all;
+    @apply bg-surface hover:bg-surface-dark text-text-main font-semibold border border-[var(--color-border)] rounded-xl transition-all active:scale-95 flex items-center justify-center;
   }
   .input-field {
-    @apply w-full bg-surface border border-[var(--color-border)] rounded-xl px-4 py-3 text-text-main focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all;
+    @apply w-full bg-surface border border-[var(--color-border)] rounded-xl px-4 py-3 text-text-main focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all placeholder:text-text-muted;
   }
 }
 

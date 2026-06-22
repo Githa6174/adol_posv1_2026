@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '../stores/authStore';
-import { Plus, Trash2, KeyRound, UserCog, Edit, RefreshCw } from 'lucide-react';
+import { Plus, Trash2, KeyRound, UserCog } from 'lucide-react';
 
 const API_URL = 'http://localhost:3001/api';
 
@@ -103,7 +103,7 @@ export function UserManagement() {
     <div className="p-8 h-full flex flex-col overflow-hidden">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">
+          <h1 className="text-3xl font-extrabold text-brand-600">
             Manajemen Pengguna
           </h1>
           <p className="text-text-muted mt-1">Kelola akses akun admin dan kasir.</p>
@@ -122,7 +122,7 @@ export function UserManagement() {
         ) : (
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="text-text-muted text-sm border-b border-white/10">
+              <tr className="text-text-muted text-sm border-b border-border">
                 <th className="pb-3 px-4 font-medium">Username</th>
                 <th className="pb-3 px-4 font-medium">Nama Lengkap</th>
                 <th className="pb-3 px-4 font-medium">Role</th>
@@ -132,8 +132,8 @@ export function UserManagement() {
             </thead>
             <tbody>
               {users.map((u: any) => (
-                <tr key={u.id} className="border-b border-white/5 hover:bg-white/5 transition-colors group">
-                  <td className="py-4 px-4 font-medium text-white">{u.username}</td>
+                <tr key={u.id} className="border-b border-border hover:bg-surface-dark transition-colors group">
+                  <td className="py-4 px-4 font-medium text-text-main">{u.username}</td>
                   <td className="py-4 px-4 text-sm text-text-main">{u.name || '-'}</td>
                   <td className="py-4 px-4">
                     <span className={`px-2 py-1 text-xs rounded-lg font-medium border ${u.role === 'admin' ? 'bg-purple-500/20 text-purple-400 border-purple-500/20' : 'bg-blue-500/20 text-blue-400 border-blue-500/20'}`}>
@@ -174,10 +174,10 @@ export function UserManagement() {
       {/* Modal Add User */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="glass-card w-full max-w-md overflow-hidden flex flex-col">
-            <div className="p-5 border-b border-white/10 flex justify-between items-center bg-surface-dark/50">
-              <h2 className="text-xl font-bold flex items-center gap-2">
-                <UserCog className="text-blue-400" /> Tambah Pengguna
+          <div className="bg-surface rounded-2xl w-full max-w-md overflow-hidden flex flex-col border border-border shadow-2xl">
+            <div className="p-5 border-b border-border flex justify-between items-center bg-surface-dark/40">
+              <h2 className="text-xl font-bold flex items-center gap-2 text-text-main">
+                <UserCog className="text-brand-500" /> Tambah Pengguna
               </h2>
             </div>
             
@@ -188,7 +188,7 @@ export function UserManagement() {
                   type="text" required
                   value={formData.username}
                   onChange={(e) => setFormData({...formData, username: e.target.value})}
-                  className="w-full bg-surface-dark border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-brand-500"
+                  className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-text-main focus:outline-none focus:border-brand-500"
                 />
               </div>
               <div>
@@ -197,7 +197,7 @@ export function UserManagement() {
                   type="password" required
                   value={formData.password}
                   onChange={(e) => setFormData({...formData, password: e.target.value})}
-                  className="w-full bg-surface-dark border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-brand-500"
+                  className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-text-main focus:outline-none focus:border-brand-500"
                 />
               </div>
               <div>
@@ -206,7 +206,7 @@ export function UserManagement() {
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  className="w-full bg-surface-dark border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-brand-500"
+                  className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-text-main focus:outline-none focus:border-brand-500"
                 />
               </div>
               <div>
@@ -214,16 +214,16 @@ export function UserManagement() {
                 <select 
                   value={formData.role}
                   onChange={(e) => setFormData({...formData, role: e.target.value})}
-                  className="w-full bg-surface-dark border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-brand-500"
+                  className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-text-main focus:outline-none focus:border-brand-500"
                 >
-                  <option value="cashier">Kasir</option>
-                  <option value="admin">Admin</option>
+                  <option value="cashier" className="bg-surface text-text-main">Kasir</option>
+                  <option value="admin" className="bg-surface text-text-main">Admin</option>
                 </select>
               </div>
               
               <div className="mt-8 flex gap-3">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 py-2.5 rounded-xl border border-white/10 text-white hover:bg-white/5">Batal</button>
-                <button type="submit" className="flex-1 py-2.5 rounded-xl bg-blue-500 hover:bg-blue-400 text-white font-medium">Simpan</button>
+                <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 btn-secondary py-2.5">Batal</button>
+                <button type="submit" className="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium">Simpan</button>
               </div>
             </form>
           </div>
@@ -233,9 +233,9 @@ export function UserManagement() {
       {/* Modal Reset Password */}
       {isResetModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="glass-card w-full max-w-sm overflow-hidden flex flex-col">
-            <div className="p-5 border-b border-white/10 bg-surface-dark/50">
-              <h2 className="text-xl font-bold">Reset Password</h2>
+          <div className="bg-surface rounded-2xl w-full max-w-sm overflow-hidden flex flex-col border border-border shadow-2xl">
+            <div className="p-5 border-b border-border bg-surface-dark/40">
+              <h2 className="text-xl font-bold text-text-main">Reset Password</h2>
               <p className="text-sm text-text-muted">Untuk {selectedUser?.username}</p>
             </div>
             <form onSubmit={handleResetPassword} className="p-5 space-y-4">
@@ -245,11 +245,11 @@ export function UserManagement() {
                   type="password" required
                   value={resetPassword}
                   onChange={(e) => setResetPassword(e.target.value)}
-                  className="w-full bg-surface-dark border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-brand-500"
+                  className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-text-main focus:outline-none focus:border-brand-500"
                 />
               </div>
               <div className="mt-6 flex gap-3">
-                <button type="button" onClick={() => setIsResetModalOpen(false)} className="flex-1 py-2.5 rounded-xl border border-white/10 text-white hover:bg-white/5">Batal</button>
+                <button type="button" onClick={() => setIsResetModalOpen(false)} className="flex-1 btn-secondary py-2.5">Batal</button>
                 <button type="submit" className="flex-1 py-2.5 rounded-xl bg-yellow-500 hover:bg-yellow-400 text-black font-medium">Reset</button>
               </div>
             </form>

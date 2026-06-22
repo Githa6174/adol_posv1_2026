@@ -101,7 +101,7 @@ export function Expenses() {
     <div className="p-8 h-full flex flex-col overflow-hidden">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400">
+          <h1 className="text-3xl font-extrabold text-brand-600">
             Pengeluaran (Expenses)
           </h1>
           <p className="text-text-muted mt-1">Catat biaya operasional dan bahan baku Anda di sini.</p>
@@ -115,13 +115,13 @@ export function Expenses() {
       </div>
 
       <div className="flex-1 glass-card overflow-hidden flex flex-col">
-        <div className="p-4 border-b border-white/5 flex gap-4">
+        <div className="p-4 border-b border-border flex gap-4">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
             <input 
               type="text" 
               placeholder="Cari deskripsi pengeluaran..." 
-              className="w-full bg-surface-dark border border-white/10 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-brand-500 transition-colors text-white"
+              className="w-full bg-background border border-border rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-brand-500 transition-colors text-text-main"
             />
           </div>
         </div>
@@ -132,7 +132,7 @@ export function Expenses() {
           ) : (
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="text-text-muted text-sm border-b border-white/10">
+                <tr className="text-text-muted text-sm border-b border-border">
                   <th className="pb-3 px-4 font-medium">Tanggal</th>
                   <th className="pb-3 px-4 font-medium">Kategori</th>
                   <th className="pb-3 px-4 font-medium">Deskripsi</th>
@@ -147,7 +147,7 @@ export function Expenses() {
                   </tr>
                 ) : (
                   expenses.map((exp: any) => (
-                    <tr key={exp.id} className="border-b border-white/5 hover:bg-white/5 transition-colors group">
+                    <tr key={exp.id} className="border-b border-border hover:bg-surface-dark transition-colors group">
                       <td className="py-4 px-4 text-sm text-text-main">
                         {new Date(exp.expense_date).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}
                       </td>
@@ -180,10 +180,10 @@ export function Expenses() {
       {/* Modal Add Expense */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="glass-card w-full max-w-md overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="p-5 border-b border-white/10 flex justify-between items-center bg-surface-dark/50">
-              <h2 className="text-xl font-bold flex items-center gap-2">
-                <Receipt className="text-red-400" /> Catat Pengeluaran
+          <div className="bg-surface rounded-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[90vh] border border-border shadow-2xl">
+            <div className="p-5 border-b border-border flex justify-between items-center bg-surface-dark/40">
+              <h2 className="text-xl font-bold flex items-center gap-2 text-text-main">
+                <Receipt className="text-red-500" /> Catat Pengeluaran
               </h2>
             </div>
             
@@ -196,7 +196,7 @@ export function Expenses() {
                     required
                     value={formData.amount}
                     onChange={(e) => setFormData({...formData, amount: e.target.value})}
-                    className="w-full bg-surface-dark border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-red-500 text-lg font-bold"
+                    className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-text-main focus:outline-none focus:border-red-500 text-lg font-bold"
                     placeholder="Contoh: 50000"
                   />
                 </div>
@@ -204,7 +204,7 @@ export function Expenses() {
                 <div>
                   <div className="flex justify-between mb-1">
                     <label className="block text-sm font-medium text-text-muted">Kategori</label>
-                    <button type="button" onClick={handleCreateCategory} className="text-xs text-brand-400 hover:text-brand-300">
+                    <button type="button" onClick={handleCreateCategory} className="text-xs text-brand-600 dark:text-brand-400 hover:underline">
                       + Kategori Baru
                     </button>
                   </div>
@@ -212,26 +212,26 @@ export function Expenses() {
                     required
                     value={formData.expense_category_id}
                     onChange={(e) => setFormData({...formData, expense_category_id: e.target.value})}
-                    className="w-full bg-surface-dark border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-red-500"
+                    className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-text-main focus:outline-none focus:border-red-500"
                   >
-                    <option value="">-- Pilih Kategori --</option>
+                    <option value="" className="bg-surface text-text-main">-- Pilih Kategori --</option>
                     {categories.map((c: any) => (
-                      <option key={c.id} value={c.id}>{c.name}</option>
+                      <option key={c.id} value={c.id} className="bg-surface text-text-main">{c.name}</option>
                     ))}
                   </select>
                 </div>
-
+ 
                 <div>
                   <label className="block text-sm font-medium text-text-muted mb-1">Deskripsi / Catatan</label>
                   <input 
                     type="text" 
                     value={formData.description}
                     onChange={(e) => setFormData({...formData, description: e.target.value})}
-                    className="w-full bg-surface-dark border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-red-500"
+                    className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-text-main focus:outline-none focus:border-red-500"
                     placeholder="Contoh: Beli es batu darurat"
                   />
                 </div>
-
+ 
                 <div>
                   <label className="block text-sm font-medium text-text-muted mb-1">Tanggal</label>
                   <input 
@@ -239,7 +239,7 @@ export function Expenses() {
                     required
                     value={formData.expense_date}
                     onChange={(e) => setFormData({...formData, expense_date: e.target.value})}
-                    className="w-full bg-surface-dark border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-red-500 [color-scheme:dark]"
+                    className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-text-main focus:outline-none focus:border-red-500"
                   />
                 </div>
               </div>
@@ -248,13 +248,13 @@ export function Expenses() {
                 <button 
                   type="button" 
                   onClick={() => setIsModalOpen(false)}
-                  className="flex-1 py-2.5 px-4 rounded-xl border border-white/10 text-white hover:bg-white/5 transition-colors font-medium"
+                  className="flex-1 btn-secondary py-2.5 px-4 font-medium"
                 >
                   Batal
                 </button>
                 <button 
                   type="submit" 
-                  className="flex-1 py-2.5 px-4 rounded-xl bg-red-500 hover:bg-red-400 text-white transition-colors font-medium shadow-lg shadow-red-500/30"
+                  className="flex-1 py-2.5 px-4 rounded-xl bg-red-600 hover:bg-red-500 text-white transition-colors font-medium shadow-lg shadow-red-500/30"
                 >
                   Simpan
                 </button>

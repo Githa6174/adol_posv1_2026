@@ -8,27 +8,28 @@ export default {
     extend: {
       colors: {
         brand: {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a',
+          50: 'var(--color-brand-50)',
+          100: 'var(--color-brand-100)',
+          200: 'var(--color-brand-200)',
+          300: 'var(--color-brand-300)',
+          400: 'var(--color-brand-400)',
+          500: 'var(--color-brand-500)',
+          600: 'var(--color-brand-600)',
+          700: 'var(--color-brand-700)',
+          800: 'var(--color-brand-800)',
+          900: 'var(--color-brand-900)',
         },
         surface: {
-          light: 'rgba(30, 41, 59, 0.7)',
-          DEFAULT: '#1e293b',
-          dark: '#0f172a',
+          light: 'var(--color-surface-light)',
+          DEFAULT: 'var(--color-surface)',
+          dark: 'var(--color-surface-dark)',
         },
-        background: '#0f172a',
+        background: 'var(--color-background)',
+        border: 'var(--color-border)',
         text: {
-          main: '#f8fafc',
-          muted: '#94a3b8',
-          inverse: '#020617'
+          main: 'var(--color-text-main)',
+          muted: 'var(--color-text-muted)',
+          inverse: 'var(--color-text-inverse)'
         }
       },
       fontFamily: {

@@ -51,21 +51,21 @@ export function Warranties() {
     <div className="p-8">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-4xl font-bold text-white mb-2">Warranties (Garansi)</h1>
+          <h1 className="text-4xl font-bold text-text-main mb-2">Warranties (Garansi)</h1>
           <p className="text-text-muted">Kelola jenis-jenis garansi untuk produk elektronik/retail</p>
         </div>
         <button 
           onClick={() => { setFormData({ id: 0, name: '', description: '', duration: 1, duration_type: 'months' }); setShowModal(true); }}
-          className="bg-brand-600 hover:bg-brand-500 text-white px-6 py-3 rounded-xl font-bold transition-colors"
+          className="bg-brand-600 hover:bg-brand-500 text-white px-6 py-3 rounded-xl font-bold transition-colors shadow-lg shadow-brand-500/30"
         >
           + Tambah Garansi
         </button>
       </div>
 
-      <div className="glass rounded-3xl p-6 border border-white/10">
-        <table className="w-full text-left text-white">
+      <div className="glass rounded-3xl p-6 border border-border">
+        <table className="w-full text-left text-text-main">
           <thead>
-            <tr className="border-b border-white/10">
+            <tr className="border-b border-border">
               <th className="py-4 font-semibold text-text-muted">Name</th>
               <th className="py-4 font-semibold text-text-muted">Duration</th>
               <th className="py-4 font-semibold text-text-muted">Description</th>
@@ -74,13 +74,13 @@ export function Warranties() {
           </thead>
           <tbody>
             {warranties.map(w => (
-              <tr key={w.id} className="border-b border-white/5 hover:bg-white/5">
+              <tr key={w.id} className="border-b border-border hover:bg-surface-dark transition-colors">
                 <td className="py-4 font-medium">{w.name}</td>
-                <td className="py-4 text-brand-300">{w.duration} {w.duration_type}</td>
+                <td className="py-4 text-brand-600 dark:text-brand-300 font-medium">{w.duration} {w.duration_type}</td>
                 <td className="py-4 text-text-muted">{w.description || '-'}</td>
                 <td className="py-4 text-right">
-                  <button onClick={() => { setFormData(w); setShowModal(true); }} className="text-blue-400 hover:text-blue-300 mr-4">Edit</button>
-                  <button onClick={() => handleDelete(w.id)} className="text-red-400 hover:text-red-300">Delete</button>
+                  <button onClick={() => { setFormData(w); setShowModal(true); }} className="text-blue-500 hover:underline mr-4 font-medium transition-colors">Edit</button>
+                  <button onClick={() => handleDelete(w.id)} className="text-red-500 hover:underline font-medium transition-colors">Delete</button>
                 </td>
               </tr>
             ))}
@@ -92,9 +92,9 @@ export function Warranties() {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="glass rounded-3xl p-8 w-full max-w-md border border-white/10 shadow-2xl">
-            <h2 className="text-2xl font-bold text-white mb-6">{formData.id ? 'Edit Garansi' : 'Tambah Garansi'}</h2>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-surface rounded-3xl p-8 w-full max-w-md border border-border shadow-2xl">
+            <h2 className="text-2xl font-bold text-text-main mb-6">{formData.id ? 'Edit Garansi' : 'Tambah Garansi'}</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-text-muted mb-2">Name</label>
@@ -108,19 +108,19 @@ export function Warranties() {
                 <div className="flex-1">
                   <label className="block text-sm font-medium text-text-muted mb-2">Type</label>
                   <select value={formData.duration_type} onChange={e => setFormData({...formData, duration_type: e.target.value})} className="input-field w-full">
-                    <option value="days">Days</option>
-                    <option value="months">Months</option>
-                    <option value="years">Years</option>
+                    <option value="days" className="bg-surface text-text-main">Days</option>
+                    <option value="months" className="bg-surface text-text-main">Months</option>
+                    <option value="years" className="bg-surface text-text-main">Years</option>
                   </select>
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-text-muted mb-2">Description</label>
-                <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="input-field w-full h-20" placeholder="Syarat dan ketentuan..." />
+                <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="input-field w-full h-20 resize-none" placeholder="Syarat dan ketentuan..." />
               </div>
               <div className="flex gap-4 pt-4">
-                <button type="button" onClick={() => setShowModal(false)} className="flex-1 btn-secondary">Batal</button>
-                <button type="submit" className="flex-1 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl">Simpan</button>
+                <button type="button" onClick={() => setShowModal(false)} className="flex-1 btn-secondary py-3">Batal</button>
+                <button type="submit" className="flex-1 btn-primary py-3">Simpan</button>
               </div>
             </form>
           </div>

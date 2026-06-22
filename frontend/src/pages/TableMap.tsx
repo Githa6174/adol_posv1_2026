@@ -184,7 +184,7 @@ export function TableMap() {
     }
 
     try {
-      const updatedOrder = await paymentService.applyDiscount(billingOrder.id, finalDiscount);
+      await paymentService.applyDiscount(billingOrder.id, finalDiscount);
       // Refresh order
       const order = await paymentService.getOrderByTable(selectedTableLocal?.id || billingOrder.table_id);
       setBillingOrder(order);
@@ -203,7 +203,6 @@ export function TableMap() {
     try {
       const selectedMethod = paymentMethods.find(m => m.id === selectedMethodId);
       const totalPaid = billingOrder.payments?.reduce((sum: number, p: any) => sum + p.amount, 0) || 0;
-      const sisaTagihan = (billingOrder.grand_total || 0) - totalPaid;
 
       if (selectedMethod?.name === 'Tunai (Cash)' && cashAmount <= 0) {
         alert('Jumlah harus lebih dari 0!');
@@ -252,7 +251,7 @@ export function TableMap() {
   return (
     <>
     <div className="p-8 h-full overflow-y-auto no-print">
-      <h1 className="text-4xl font-extrabold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-brand-300 to-white">Peta Meja</h1>
+      <h1 className="text-4xl font-extrabold mb-8 text-brand-600">Peta Meja</h1>
       
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
         {tables.map(table => (
@@ -279,9 +278,9 @@ export function TableMap() {
       {/* Modal Aksi Meja Terisi */}
       {showActionModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="glass p-8 rounded-3xl w-96 transform transition-all border border-white/10 shadow-2xl text-center">
-            <h2 className="text-2xl font-bold mb-2 text-white">Meja {selectedOccupiedTable?.table_number}</h2>
-            <p className="text-brand-300 mb-8 font-medium text-sm">Tagihan: {selectedOccupiedOrder?.order_number}</p>
+          <div className="bg-surface p-8 rounded-3xl w-96 transform transition-all border border-border shadow-2xl text-center">
+            <h2 className="text-2xl font-bold mb-2 text-text-main">Meja {selectedOccupiedTable?.table_number}</h2>
+            <p className="text-brand-600 dark:text-brand-300 mb-8 font-medium text-sm">Tagihan: {selectedOccupiedOrder?.order_number}</p>
             
             <div className="flex flex-col gap-4">
               <button 
@@ -293,12 +292,12 @@ export function TableMap() {
               
               <button 
                 onClick={handleActionPay}
-                className="w-full bg-surface hover:bg-surface-light text-white font-bold py-4 rounded-xl transition-colors border border-white/10 flex items-center justify-center gap-3"
+                className="w-full bg-surface hover:bg-surface-dark text-text-main font-bold py-4 rounded-xl transition-colors border border-border flex items-center justify-center gap-3"
               >
                 <span className="material-icons text-2xl">receipt_long</span> Lihat Tagihan / Bayar
               </button>
 
-              <div className="border-t border-white/10 my-2"></div>
+              <div className="border-t border-border my-2"></div>
               
               <button 
                 onClick={() => {
@@ -308,14 +307,14 @@ export function TableMap() {
                     setShowPinModal(true);
                   }
                 }}
-                className="w-full bg-red-500/10 hover:bg-red-500/20 text-red-400 font-bold py-3 rounded-xl transition-colors border border-red-500/20 flex items-center justify-center gap-2"
+                className="w-full bg-red-500/10 hover:bg-red-500/20 text-red-500 dark:text-red-400 font-bold py-3 rounded-xl transition-colors border border-red-500/20 flex items-center justify-center gap-2"
               >
                 <span className="material-icons text-xl align-middle mr-1">delete</span> Batalkan Pesanan
               </button>
               
               <button 
                 onClick={() => setShowActionModal(false)}
-                className="mt-2 text-text-muted hover:text-white transition-colors underline text-sm"
+                className="mt-2 text-text-muted hover:text-text-main transition-colors underline text-sm"
               >
                 Kembali
               </button>
@@ -327,9 +326,9 @@ export function TableMap() {
       {/* Modal PIN Admin */}
       {showPinModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[60]">
-          <div className="glass p-8 rounded-3xl w-80 transform transition-all border border-red-500/30 shadow-2xl text-center shadow-red-500/20">
-            <span className="material-icons text-5xl mb-4 text-red-400">admin_panel_settings</span>
-            <h2 className="text-xl font-bold mb-2 text-white">Otorisasi Admin</h2>
+          <div className="bg-surface p-8 rounded-3xl w-80 transform transition-all border border-red-500/30 shadow-2xl text-center shadow-red-500/20">
+            <span className="material-icons text-5xl mb-4 text-red-500 dark:text-red-400">admin_panel_settings</span>
+            <h2 className="text-xl font-bold mb-2 text-text-main">Otorisasi Admin</h2>
             <p className="text-text-muted mb-6 text-sm">Masukkan PIN (Password Admin) untuk membatalkan pesanan.</p>
             
             <input 
@@ -337,7 +336,7 @@ export function TableMap() {
               placeholder="PIN Admin..."
               value={adminPin}
               onChange={(e) => setAdminPin(e.target.value)}
-              className="w-full px-4 py-3 bg-surface-dark border border-white/10 rounded-xl focus:border-red-500 focus:ring-1 focus:ring-red-500 text-center text-xl text-white tracking-[0.5em] mb-6"
+              className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:border-red-500 focus:ring-1 focus:ring-red-500 text-center text-xl text-text-main tracking-[0.5em] mb-6"
               autoFocus
             />
             
@@ -352,16 +351,16 @@ export function TableMap() {
       {/* Modal Pax (Order Baru) */}
       {showPaxModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="glass p-8 rounded-3xl w-96 transform transition-all border border-white/10 shadow-2xl">
-            <h2 className="text-2xl font-bold mb-4 text-white">Meja {selectedTableLocal?.table_number}</h2>
+          <div className="bg-surface p-8 rounded-3xl w-96 transform transition-all border border-border shadow-2xl">
+            <h2 className="text-2xl font-bold mb-4 text-text-main">Meja {selectedTableLocal?.table_number}</h2>
             <div className="mb-6">
-              <label className="block text-brand-200 font-medium mb-2 text-sm">Jumlah Tamu (Pax)</label>
+              <label className="block text-text-muted font-medium mb-2 text-sm">Jumlah Tamu (Pax)</label>
               <input
                 type="number"
                 min="1"
                 value={pax}
                 onChange={(e) => setPax(Number(e.target.value))}
-                className="w-full px-4 py-3 bg-surface-dark border border-white/10 rounded-xl focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 text-xl font-bold text-center text-white"
+                className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 text-xl font-bold text-center text-text-main"
               />
             </div>
             <div className="flex gap-4">
@@ -385,18 +384,18 @@ export function TableMap() {
       {/* Modal Tagihan & Pembayaran */}
       {billingOrder && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="glass rounded-3xl w-full max-w-2xl flex flex-col max-h-[90vh] border border-white/10 shadow-2xl overflow-hidden">
-            <div className="p-6 border-b border-white/10 bg-surface/50 flex justify-between items-start">
+          <div className="bg-surface rounded-3xl w-full max-w-2xl flex flex-col max-h-[90vh] border border-border shadow-2xl overflow-hidden">
+            <div className="p-6 border-b border-border bg-surface-dark/40 flex justify-between items-start">
               <div>
-                <h2 className="text-2xl font-bold text-white mb-1">Tagihan #{billingOrder.order_number?.split('-')[1]}</h2>
+                <h2 className="text-2xl font-bold text-text-main mb-1">Tagihan #{billingOrder.order_number?.split('-')[1]}</h2>
                 
                 {/* Customer Section */}
                 <div className="mt-3 relative">
                   {selectedCustomer ? (
                     <div className="flex items-center gap-2 bg-orange-500/10 border border-orange-500/20 px-3 py-2 rounded-lg inline-flex">
-                      <span className="material-icons text-base text-orange-400">loyalty</span>
-                      <span className="text-orange-300 font-bold text-sm">{selectedCustomer.name}</span>
-                      <span className="text-orange-400/50 text-xs">({selectedCustomer.points} Pts)</span>
+                      <span className="material-icons text-base text-orange-600 dark:text-orange-400">loyalty</span>
+                      <span className="text-orange-600 dark:text-orange-300 font-bold text-sm">{selectedCustomer.name}</span>
+                      <span className="text-orange-500 dark:text-orange-400/50 text-xs">({selectedCustomer.points} Pts)</span>
                       <button onClick={() => setSelectedCustomer(null)} className="ml-2 text-text-muted hover:text-red-400">&times;</button>
                     </div>
                   ) : (
@@ -406,18 +405,18 @@ export function TableMap() {
                         placeholder="Pilih Pelanggan (CRM)..."
                         value={customerSearch}
                         onChange={(e) => setCustomerSearch(e.target.value)}
-                        className="w-full px-3 py-1.5 bg-surface-dark border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-orange-500"
+                        className="w-full px-3 py-1.5 bg-background border border-border rounded-lg text-sm text-text-main focus:outline-none focus:border-orange-500"
                       />
                       {customerSearch && customers.length > 0 && (
-                        <div className="absolute top-full left-0 w-full mt-1 bg-surface border border-white/10 rounded-lg shadow-xl z-20 max-h-40 overflow-y-auto">
+                        <div className="absolute top-full left-0 w-full mt-1 bg-surface border border-border rounded-lg shadow-xl z-20 max-h-40 overflow-y-auto">
                           {customers.map(c => (
                             <div 
                               key={c.id} 
                               onClick={() => handleAssignCustomer(c)}
-                              className="px-3 py-2 hover:bg-white/10 cursor-pointer text-sm flex justify-between items-center"
+                              className="px-3 py-2 hover:bg-surface-dark cursor-pointer text-sm flex justify-between items-center"
                             >
-                              <span className="text-white font-medium">{c.name}</span>
-                              <span className="text-orange-400 text-xs flex items-center gap-1"><span className="material-icons text-sm">star</span> {c.points}</span>
+                              <span className="text-text-main font-medium">{c.name}</span>
+                              <span className="text-orange-600 dark:text-orange-400 text-xs flex items-center gap-1"><span className="material-icons text-sm">star</span> {c.points}</span>
                             </div>
                           ))}
                         </div>
@@ -433,26 +432,26 @@ export function TableMap() {
             <div className="p-6 flex-1 overflow-y-auto custom-scrollbar">
               <div className="space-y-4 mb-6">
                 {billingOrder.order_items?.map((oi: any) => (
-                  <div key={oi.id} className="flex justify-between items-center border-b border-white/5 pb-3">
+                  <div key={oi.id} className="flex justify-between items-center border-b border-border pb-3">
                     <div>
-                      <div className="font-bold text-white text-lg">{oi.item.name}</div>
-                      <div className="text-sm text-brand-300">
+                      <div className="font-bold text-text-main text-lg">{oi.item.name}</div>
+                      <div className="text-sm text-brand-600 dark:text-brand-300">
                         {oi.quantity}x @ Rp {oi.unit_price?.toLocaleString('id-ID')}
                       </div>
                       {oi.discount_amount > 0 && (
-                        <div className="text-xs text-red-400 mt-0.5">
+                        <div className="text-xs text-red-500 dark:text-red-400 mt-0.5">
                           Diskon per item: -Rp {oi.discount_amount.toLocaleString('id-ID')}
                         </div>
                       )}
                     </div>
-                    <div className="font-bold text-white text-lg">
+                    <div className="font-bold text-text-main text-lg">
                       Rp {oi.subtotal?.toLocaleString('id-ID')}
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div className="bg-brand-900/10 border border-brand-500/20 p-5 rounded-2xl mb-6 shadow-inner space-y-2">
+              <div className="bg-brand-500/10 border border-brand-500/20 p-5 rounded-2xl mb-6 shadow-inner space-y-2">
                 <div className="flex justify-between items-center text-text-muted">
                   <span>Subtotal</span>
                   <span>Rp {billingOrder.subtotal?.toLocaleString('id-ID')}</span>
@@ -465,23 +464,23 @@ export function TableMap() {
                   <span>Service (5%)</span>
                   <span>Rp {billingOrder.service_amount?.toLocaleString('id-ID')}</span>
                 </div>
-                <div className="flex justify-between items-center text-brand-300">
+                <div className="flex justify-between items-center text-brand-600 dark:text-brand-300">
                   <div className="flex flex-col gap-1">
                     <span>Diskon</span>
                     <div className="flex items-center gap-1">
                       <select 
                         value={discountType} 
                         onChange={(e) => setDiscountType(e.target.value as any)}
-                        className="bg-surface-dark border border-white/10 rounded text-sm text-white px-1 py-1 focus:outline-none"
+                        className="bg-background border border-border rounded text-sm text-text-main px-1 py-1 focus:outline-none"
                       >
-                        <option value="nominal">Rp</option>
-                        <option value="percentage">%</option>
+                        <option value="nominal" className="bg-surface text-text-main">Rp</option>
+                        <option value="percentage" className="bg-surface text-text-main">%</option>
                       </select>
                       <input 
                         type="number" 
                         value={discountInput}
                         onChange={(e) => setDiscountInput(e.target.value)}
-                        className="w-20 px-2 py-1 bg-surface-dark border border-white/10 rounded text-sm text-white focus:outline-none focus:border-brand-500"
+                        className="w-20 px-2 py-1 bg-background border border-border rounded text-sm text-text-main focus:outline-none focus:border-brand-500"
                       />
                       <button 
                         onClick={handleApplyDiscount}
@@ -495,21 +494,21 @@ export function TableMap() {
                   <span>- Rp {billingOrder.discount_amount?.toLocaleString('id-ID')}</span>
                 </div>
                 
-                <div className="border-t border-white/10 my-2 pt-2 flex justify-between items-center">
-                  <span className="text-lg font-medium text-brand-100">Grand Total</span>
-                  <span className="text-xl font-bold text-white">Rp {billingOrder.grand_total?.toLocaleString('id-ID')}</span>
+                <div className="border-t border-border my-2 pt-2 flex justify-between items-center">
+                  <span className="text-lg font-medium text-text-main">Grand Total</span>
+                  <span className="text-xl font-bold text-text-main">Rp {billingOrder.grand_total?.toLocaleString('id-ID')}</span>
                 </div>
 
                 {currentTotalPaid > 0 && (
-                  <div className="flex justify-between items-center text-green-400">
+                  <div className="flex justify-between items-center text-green-600 dark:text-green-400">
                     <span>Telah Dibayar</span>
                     <span>- Rp {currentTotalPaid.toLocaleString('id-ID')}</span>
                   </div>
                 )}
 
                 <div className="border-t border-brand-500/30 pt-3 mt-3 flex justify-between items-center">
-                  <span className="text-xl font-bold text-brand-200">Sisa Tagihan</span>
-                  <span className="text-4xl font-black text-brand-400">Rp {sisaTagihan.toLocaleString('id-ID')}</span>
+                  <span className="text-xl font-bold text-brand-600 dark:text-brand-300">Sisa Tagihan</span>
+                  <span className="text-4xl font-black text-brand-600 dark:text-brand-400">Rp {sisaTagihan.toLocaleString('id-ID')}</span>
                 </div>
               </div>
 
@@ -523,7 +522,7 @@ export function TableMap() {
                         setSelectedMethodId(pm.id);
                         if (pm.name !== 'Tunai (Cash)') setCashAmount(sisaTagihan);
                       }}
-                      className={`p-4 rounded-xl font-bold transition-all border ${selectedMethodId === pm.id ? 'bg-brand-600 text-white border-brand-500 shadow-lg shadow-brand-500/20' : 'bg-surface/50 text-text-muted border-white/5 hover:bg-surface hover:text-white'}`}
+                      className={`p-4 rounded-xl font-bold transition-all border ${selectedMethodId === pm.id ? 'bg-brand-600 text-white border-brand-500 shadow-lg shadow-brand-500/20' : 'bg-surface-dark/40 text-text-muted border-border hover:bg-surface-dark hover:text-text-main'}`}
                     >
                       {pm.name}
                     </button>
@@ -532,36 +531,36 @@ export function TableMap() {
               </div>
 
               {selectedMethodObj?.name === 'Tunai (Cash)' ? (
-                <div className="bg-surface/30 p-5 rounded-2xl border border-white/5">
-                  <label className="block text-brand-200 font-medium mb-2">Uang Diterima (Cash)</label>
+                <div className="bg-surface-dark/40 p-5 rounded-2xl border border-border">
+                  <label className="block text-text-muted font-medium mb-2">Uang Diterima (Cash)</label>
                   <input
                     type="number"
                     value={cashAmount}
                     onChange={(e) => setCashAmount(Number(e.target.value))}
-                    className="w-full px-4 py-3 bg-surface-dark border border-white/10 rounded-xl focus:border-brand-500 text-2xl font-bold text-white mb-2"
+                    className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:border-brand-500 text-2xl font-bold text-text-main mb-2"
                   />
                   {changeAmount > 0 && (
-                    <div className="p-4 bg-green-500/10 border border-green-500/20 text-green-400 rounded-xl font-bold flex justify-between items-center mt-4">
+                    <div className="p-4 bg-green-500/10 border border-green-500/20 text-green-500 dark:text-green-400 rounded-xl font-bold flex justify-between items-center mt-4">
                       <span>Kembalian:</span>
                       <span className="text-2xl">Rp {changeAmount.toLocaleString('id-ID')}</span>
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="bg-surface/30 p-5 rounded-2xl border border-white/5">
-                  <label className="block text-brand-200 font-medium mb-2">Nomor Referensi (Opsional)</label>
+                <div className="bg-surface-dark/40 p-5 rounded-2xl border border-border">
+                  <label className="block text-text-muted font-medium mb-2">Nomor Referensi (Opsional)</label>
                   <input
                     type="text"
                     value={referenceNumber}
                     onChange={(e) => setReferenceNumber(e.target.value)}
                     placeholder="No. Kartu / Ref Transfer"
-                    className="w-full px-4 py-3 bg-surface-dark border border-white/10 rounded-xl focus:border-brand-500 text-white"
+                    className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:border-brand-500 text-text-main"
                   />
                 </div>
               )}
             </div>
 
-            <div className="p-6 border-t border-white/10 bg-surface/50 flex gap-4">
+            <div className="p-6 border-t border-border bg-surface-dark/40 flex gap-4">
               <button 
                 onClick={() => setBillingOrder(null)}
                 className="flex-1 btn-secondary py-4 text-lg"

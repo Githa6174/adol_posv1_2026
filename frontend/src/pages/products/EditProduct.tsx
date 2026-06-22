@@ -13,7 +13,6 @@ export function EditProduct() {
   const [categories, setCategories] = useState<any[]>([]);
   const [brands, setBrands] = useState<any[]>([]);
   const [units, setUnits] = useState<any[]>([]);
-  const [warranties, setWarranties] = useState<any[]>([]);
   const [variationTemplates, setVariationTemplates] = useState<any[]>([]);
 
   // Form State
@@ -40,18 +39,16 @@ export function EditProduct() {
   });
 
   // Variables for variable product
-  const [selectedVariation, setSelectedVariation] = useState<any>(null);
   const [generatedVariations, setGeneratedVariations] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const headers = { Authorization: `Bearer ${token}` };
-        const [catRes, brandRes, unitRes, warrRes, varRes, itemRes] = await Promise.all([
+        const [catRes, brandRes, unitRes, varRes, itemRes] = await Promise.all([
           fetch(`${API_URL}/items/categories`, { headers }),
           fetch(`${API_URL}/product-settings/brands`, { headers }),
           fetch(`${API_URL}/product-settings/units`, { headers }),
-          fetch(`${API_URL}/product-settings/warranties`, { headers }),
           fetch(`${API_URL}/product-settings/variations`, { headers }),
           fetch(`${API_URL}/items/${id}`, { headers })
         ]);
@@ -59,7 +56,6 @@ export function EditProduct() {
         if (catRes.ok) setCategories(await catRes.json());
         if (brandRes.ok) setBrands(await brandRes.json());
         if (unitRes.ok) setUnits(await unitRes.json());
-        if (warrRes.ok) setWarranties(await warrRes.json());
         if (varRes.ok) setVariationTemplates(await varRes.json());
         
         if (itemRes.ok) {
@@ -107,7 +103,6 @@ export function EditProduct() {
 
   const handleVariationSelect = (templateId: string) => {
     const template = variationTemplates.find(v => v.id.toString() === templateId);
-    setSelectedVariation(template);
     
     if (template) {
       // Auto generate variations options
@@ -162,15 +157,15 @@ export function EditProduct() {
           <h1 className="text-4xl font-bold text-text-main mb-2">Edit Product</h1>
           <p className="text-text-muted">Perbarui informasi produk dan variasinya.</p>
         </div>
-        <button onClick={() => navigate('/products/list')} className="text-text-muted hover:text-white transition-colors underline">
+        <button onClick={() => navigate('/products/list')} className="text-text-muted hover:text-text-main transition-colors underline">
           Kembali ke List
         </button>
       </div>
 
       <form onSubmit={handleSave} className="space-y-6">
         {/* Section 1: General Info */}
-        <div className="glass rounded-3xl p-8 border border-[var(--color-border)]">
-          <h2 className="text-2xl font-bold text-text-main mb-6 border-b border-[var(--color-border)] pb-4">General Information</h2>
+        <div className="glass rounded-3xl p-8 border border-border">
+          <h2 className="text-2xl font-bold text-text-main mb-6 border-b border-border pb-4">General Information</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-text-muted mb-2">Product Name *</label>
@@ -184,47 +179,47 @@ export function EditProduct() {
             <div>
               <label className="block text-sm font-medium text-text-muted mb-2">Barcode Type</label>
               <select value={formData.barcode_type} onChange={e => setFormData({...formData, barcode_type: e.target.value})} className="input-field w-full">
-                <option value="C128">CODE 128 (Default)</option>
-                <option value="C39">CODE 39</option>
-                <option value="EAN13">EAN-13</option>
+                <option value="C128" className="bg-surface text-text-main">CODE 128 (Default)</option>
+                <option value="C39" className="bg-surface text-text-main">CODE 39</option>
+                <option value="EAN13" className="bg-surface text-text-main">EAN-13</option>
               </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-text-muted mb-2">Category</label>
               <select value={formData.category_id} onChange={e => setFormData({...formData, category_id: e.target.value})} className="input-field w-full">
-                <option value="">Pilih Kategori...</option>
-                {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                <option value="" className="bg-surface text-text-main">Pilih Kategori...</option>
+                {categories.map(c => <option key={c.id} value={c.id} className="bg-surface text-text-main">{c.name}</option>)}
               </select>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-text-muted mb-2">Brand</label>
               <select value={formData.brand_id} onChange={e => setFormData({...formData, brand_id: e.target.value})} className="input-field w-full">
-                <option value="">Pilih Brand...</option>
-                {brands.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
+                <option value="" className="bg-surface text-text-main">Pilih Brand...</option>
+                {brands.map(b => <option key={b.id} value={b.id} className="bg-surface text-text-main">{b.name}</option>)}
               </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-text-muted mb-2">Unit</label>
               <select value={formData.unit_id} onChange={e => setFormData({...formData, unit_id: e.target.value})} className="input-field w-full">
-                <option value="">Pilih Satuan...</option>
-                {units.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
+                <option value="" className="bg-surface text-text-main">Pilih Satuan...</option>
+                {units.map(u => <option key={u.id} value={u.id} className="bg-surface text-text-main">{u.name}</option>)}
               </select>
             </div>
           </div>
         </div>
 
         {/* Section 2: Product Type & Variations */}
-        <div className="glass rounded-3xl p-8 border border-white/10">
-          <h2 className="text-2xl font-bold text-white mb-6 border-b border-white/10 pb-4">Tipe Produk & Variasi</h2>
+        <div className="glass rounded-3xl p-8 border border-border">
+          <h2 className="text-2xl font-bold text-text-main mb-6 border-b border-border pb-4">Tipe Produk & Variasi</h2>
           <div className="mb-6">
             <label className="block text-sm font-medium text-text-muted mb-2">Product Type</label>
             <div className="flex gap-4">
-              <label className="flex items-center gap-2 text-white cursor-pointer p-4 border border-white/10 rounded-xl hover:bg-white/5 flex-1 text-center justify-center transition-colors">
+              <label className="flex items-center gap-2 text-text-main cursor-pointer p-4 border border-border rounded-xl hover:bg-surface-dark flex-1 text-center justify-center transition-colors">
                 <input type="radio" name="type" value="single" checked={formData.type === 'single'} onChange={() => setFormData({...formData, type: 'single'})} />
                 Single (Standar)
               </label>
-              <label className="flex items-center gap-2 text-white cursor-pointer p-4 border border-brand-500/30 rounded-xl hover:bg-brand-500/10 flex-1 text-center justify-center transition-colors">
+              <label className="flex items-center gap-2 text-text-main cursor-pointer p-4 border border-brand-500/20 rounded-xl hover:bg-brand-500/5 flex-1 text-center justify-center transition-colors">
                 <input type="radio" name="type" value="variable" checked={formData.type === 'variable'} onChange={() => setFormData({...formData, type: 'variable'})} />
                 Variable (Memiliki Pilihan)
               </label>
@@ -232,28 +227,28 @@ export function EditProduct() {
           </div>
 
           {formData.type === 'variable' && (
-            <div className="mt-6 bg-surface-dark/50 p-6 rounded-2xl border border-white/5">
+            <div className="mt-6 bg-surface-dark/50 p-6 rounded-2xl border border-border">
               <label className="block text-sm font-medium text-text-muted mb-2">Pilih Template Variasi</label>
               <select onChange={e => handleVariationSelect(e.target.value)} className="input-field w-full mb-6">
-                <option value="">Pilih Variasi...</option>
-                {variationTemplates.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}
+                <option value="" className="bg-surface text-text-main">Pilih Variasi...</option>
+                {variationTemplates.map(v => <option key={v.id} value={v.id} className="bg-surface text-text-main">{v.name}</option>)}
               </select>
 
               {generatedVariations.length > 0 && (
-                <div className="border border-[var(--color-border)] rounded-2xl overflow-hidden mt-6">
-              <table className="w-full text-left text-text-main">
-                <thead className="bg-surface-light border-b border-[var(--color-border)]">
-                  <tr>
-                    <th className="p-4 font-semibold text-text-muted">Option</th>
-                    <th className="p-4 font-semibold text-text-muted">SKU (Sub)</th>
-                    <th className="p-4 font-semibold text-text-muted">Price Inc. Tax</th>
-                    <th className="p-4 font-semibold text-text-muted">Stock</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {generatedVariations.map((v, idx) => (
-                    <tr key={idx} className="border-b border-[var(--color-border)] last:border-0 hover:bg-surface-light">
-                          <td className="py-3 font-bold text-brand-300">{v.option_name}</td>
+                <div className="border border-border rounded-2xl overflow-hidden mt-6">
+                  <table className="w-full text-left text-text-main">
+                    <thead className="bg-surface-light border-b border-border">
+                      <tr>
+                        <th className="p-4 font-semibold text-text-muted">Option</th>
+                        <th className="p-4 font-semibold text-text-muted">SKU (Sub)</th>
+                        <th className="p-4 font-semibold text-text-muted">Price Inc. Tax</th>
+                        <th className="p-4 font-semibold text-text-muted">Stock</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {generatedVariations.map((v, idx) => (
+                        <tr key={idx} className="border-b border-border last:border-0 hover:bg-surface-light">
+                          <td className="p-4 font-bold text-brand-600 dark:text-brand-300">{v.option_name}</td>
                           <td className="py-3 pr-2">
                             <input type="text" value={v.sku} onChange={e => {
                               const newArr = [...generatedVariations];
@@ -287,25 +282,25 @@ export function EditProduct() {
 
         {/* Section 3: Pricing (If Single) */}
         {formData.type === 'single' && (
-          <div className="glass rounded-3xl p-8 border border-[var(--color-border)]">
-          <h2 className="text-2xl font-bold text-text-main mb-6 border-b border-[var(--color-border)] pb-4">Pricing & Stock</h2>
+          <div className="glass rounded-3xl p-8 border border-border">
+          <h2 className="text-2xl font-bold text-text-main mb-6 border-b border-border pb-4">Pricing & Stock</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-text-muted mb-2">Harga Jual Dasar (Level 1)</label>
-                <input type="number" value={formData.price_level_1} onChange={e => setFormData({...formData, price_level_1: Number(e.target.value)})} className="input-field w-full text-xl font-bold text-green-400" />
+                <input type="number" value={formData.price_level_1} onChange={e => setFormData({...formData, price_level_1: Number(e.target.value)})} className="input-field w-full text-xl font-bold text-green-600 dark:text-green-400" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-text-muted mb-2">Harga GoFood/GrabFood (Level 2)</label>
                 <input type="number" value={formData.price_level_2} onChange={e => setFormData({...formData, price_level_2: Number(e.target.value)})} className="input-field w-full" />
               </div>
-              <div className="col-span-2 border-t border-white/10 my-2 pt-4">
+              <div className="col-span-2 border-t border-border my-2 pt-4">
                 <div className="flex items-center gap-3 mb-4">
-                  <input type="checkbox" id="manageStock" checked={formData.manage_stock} onChange={e => setFormData({...formData, manage_stock: e.target.checked})} className="w-5 h-5 accent-brand-500" />
-                  <label htmlFor="manageStock" className="text-white font-bold cursor-pointer">Kelola Stok (Manage Stock)</label>
+                  <input type="checkbox" id="manageStock" checked={formData.manage_stock} onChange={e => setFormData({...formData, manage_stock: e.target.checked})} className="w-5 h-5 rounded border-border bg-background text-brand-500 focus:ring-brand-500 focus:ring-offset-background" />
+                  <label htmlFor="manageStock" className="text-text-main font-bold cursor-pointer">Kelola Stok (Manage Stock)</label>
                 </div>
                 
                 {formData.manage_stock && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-surface-dark/30 p-4 rounded-xl border border-white/5">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-surface-dark/30 p-4 rounded-xl border border-border">
                     <div>
                       <label className="block text-sm font-medium text-text-muted mb-2">Stok Saat Ini</label>
                       <input type="number" value={formData.current_stock} onChange={e => setFormData({...formData, current_stock: Number(e.target.value)})} className="input-field w-full" />
@@ -321,9 +316,9 @@ export function EditProduct() {
           </div>
         )}
 
-        <div className="flex gap-4 sticky bottom-8 pt-4">
+        <div className="flex gap-4 sticky bottom-8 pt-4 bg-background/80 backdrop-blur-sm z-10">
           <button type="button" onClick={() => navigate('/products/list')} className="flex-1 btn-secondary py-4 text-lg">Batal</button>
-          <button type="submit" className="flex-[2] bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-2xl shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-all transform hover:scale-[1.01] text-lg">
+          <button type="submit" className="flex-[2] btn-primary text-white font-bold rounded-2xl shadow-lg shadow-brand-500/20 transition-all transform hover:scale-[1.01] text-lg py-4">
             <span className="material-icons text-xl align-middle mr-1">save</span> Simpan Produk
           </button>
         </div>
