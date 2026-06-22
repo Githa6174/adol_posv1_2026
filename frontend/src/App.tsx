@@ -58,20 +58,20 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
               to="/" 
               className={`flex items-center gap-3 py-3 px-4 rounded-xl transition-all ${location.pathname === '/' ? 'bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20 font-bold' : 'border border-transparent text-text-muted hover:bg-surface-dark hover:text-text-main font-medium'}`}
             >
-              <span className="material-icons text-xl">dashboard</span> Dashboard
+              <span className="material-icons text-xl">dashboard</span>Dashboard
             </Link>
           )}
           <Link 
             to="/tables" 
             className={`flex items-center gap-3 py-3 px-4 rounded-xl transition-all ${location.pathname === '/tables' ? 'bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20 font-bold' : 'border border-transparent text-text-muted hover:bg-surface-dark hover:text-text-main font-medium'}`}
           >
-            <span className="material-icons text-xl">table_restaurant</span> Pilih Meja / Table
+            <span className="material-icons text-xl">table_restaurant</span>Pilih Meja / Table
           </Link>
           <Link 
             to="/pos" 
             className={`flex items-center gap-3 py-3 px-4 rounded-xl transition-all ${location.pathname === '/pos' ? 'bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20 font-bold' : 'border border-transparent text-text-muted hover:bg-surface-dark hover:text-text-main font-medium'}`}
           >
-            <span className="material-icons text-xl">point_of_sale</span> Kasir (POS)
+            <span className="material-icons text-xl">point_of_sale</span>Kasir (POS)
           </Link>
           
           {(user?.role === 'admin' || user?.role === 'kitchen') && (
@@ -79,7 +79,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
               to="/kitchen" 
               className={`flex items-center gap-3 py-3 px-4 rounded-xl transition-all ${location.pathname === '/kitchen' ? 'bg-amber-500/10 text-amber-600 dark:text-yellow-400 border border-amber-500/20 font-bold' : 'border border-transparent text-text-muted hover:bg-surface-dark hover:text-text-main font-medium'}`}
             >
-              <span className="material-icons text-xl">soup_kitchen</span> Kitchen Display
+              <span className="material-icons text-xl">soup_kitchen</span>Kitchen Display
             </Link>
           )}
           
@@ -91,13 +91,13 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                   onClick={() => setIsContactsOpen(!isContactsOpen)}
                   className={`w-full flex items-center justify-between py-3 px-4 rounded-xl hover:bg-surface-dark transition-all text-text-muted hover:text-text-main ${isContactsOpen ? 'font-bold' : 'font-medium'}`}
                 >
-                  <span className="flex items-center gap-3"><span className="material-icons text-xl">people</span> Kontak & Pengguna</span>
+                  <span className="flex items-center gap-3"><span className="material-icons text-xl">people</span>Kontak & Pengguna</span>
                   <span className={`transform transition-transform ${isContactsOpen ? 'rotate-180' : ''}`}>▼</span>
                 </button>
                 {isContactsOpen && (
                   <div className="pl-8 pr-4 space-y-1 mt-1 border-l-2 border-border ml-4">
-                    <Link to="/customers" className={`flex items-center gap-2 py-2 px-3 rounded-lg text-sm hover:bg-surface-dark transition-colors ${location.pathname === '/customers' ? 'bg-surface-dark text-orange-600 dark:text-orange-400 font-bold' : 'text-text-muted hover:text-text-main'}`}><span className="material-icons text-base">loyalty</span> Konsumen / Pelanggan</Link>
-                    <Link to="/users" className={`flex items-center gap-2 py-2 px-3 rounded-lg text-sm hover:bg-surface-dark transition-colors ${location.pathname === '/users' ? 'bg-surface-dark text-brand-600 dark:text-blue-400 font-bold' : 'text-text-muted hover:text-text-main'}`}><span className="material-icons text-base">badge</span> Staff / Admin</Link>
+                    <Link to="/customers" className={`flex items-center gap-2 py-2 px-3 rounded-lg text-sm hover:bg-surface-dark transition-colors ${location.pathname === '/customers' ? 'bg-surface-dark text-orange-600 dark:text-orange-400 font-bold' : 'text-text-muted hover:text-text-main'}`}><span className="material-icons text-base">loyalty</span>Konsumen / Pelanggan</Link>
+                    <Link to="/users" className={`flex items-center gap-2 py-2 px-3 rounded-lg text-sm hover:bg-surface-dark transition-colors ${location.pathname === '/users' ? 'bg-surface-dark text-brand-600 dark:text-blue-400 font-bold' : 'text-text-muted hover:text-text-main'}`}><span className="material-icons text-base">badge</span>Staff / Admin</Link>
                   </div>
                 )}
               </div>
@@ -106,7 +106,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                   onClick={() => setIsProductsOpen(!isProductsOpen)}
                   className={`w-full flex items-center justify-between py-3 px-4 rounded-xl hover:bg-surface-dark transition-all text-text-muted hover:text-text-main ${isProductsOpen ? 'font-bold' : 'font-medium'}`}
                 >
-                  <span className="flex items-center gap-3"><span className="material-icons text-xl">inventory_2</span> Products</span>
+                  <span className="flex items-center gap-3"><span className="material-icons text-xl">inventory_2</span>Products</span>
                   <span className={`transform transition-transform ${isProductsOpen ? 'rotate-180' : ''}`}>▼</span>
                 </button>
                 {isProductsOpen && (
@@ -125,7 +125,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                 to="/expenses" 
                 className={`flex items-center gap-3 py-3 px-4 rounded-xl transition-all ${location.pathname === '/expenses' ? 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 font-bold' : 'border border-transparent text-text-muted hover:bg-surface-dark hover:text-text-main font-medium'}`}
               >
-                <span className="material-icons text-xl">account_balance_wallet</span> Pengeluaran
+                <span className="material-icons text-xl">account_balance_wallet</span>Pengeluaran
               </Link>
             </>
           )}
