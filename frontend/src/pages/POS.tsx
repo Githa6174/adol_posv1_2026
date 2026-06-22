@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { createPortal } from 'react-dom';
 import { itemService } from '../services/itemService';
 import { orderService } from '../services/orderService';
 import { tableService } from '../services/tableService';
@@ -384,8 +385,8 @@ export function POS() {
       </div>
 
       {/* Item Config Modal */}
-      {selectedConfigItem && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      {selectedConfigItem && createPortal(
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 text-text-main">
           <div className="bg-surface rounded-3xl w-full max-w-md transform transition-all border border-border shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             <div className="p-8 pb-4">
               <h2 className="text-3xl font-black mb-2 text-text-main">{selectedConfigItem.name}</h2>
@@ -416,7 +417,7 @@ export function POS() {
                   <option value={5} className="bg-surface text-text-main">Level 5 - Rp {selectedConfigItem.price_level_5?.toLocaleString('id-ID')}</option>
                 </select>
               </div>
-
+ 
               <div className="bg-surface-dark/40 p-5 rounded-2xl border border-border">
                 <label className="block text-text-muted font-medium mb-3 text-sm">Diskon per Item (Opsional)</label>
                 <div className="flex items-center gap-2">
@@ -438,7 +439,7 @@ export function POS() {
                   />
                 </div>
               </div>
-
+ 
               <div className="bg-surface-dark/40 p-5 rounded-2xl border border-border">
                 <label className="block text-text-muted font-medium mb-3 text-sm">Instruksi Khusus (Notes)</label>
                 <textarea
@@ -449,7 +450,7 @@ export function POS() {
                 />
               </div>
             </div>
-
+ 
             <div className="p-6 border-t border-border bg-surface-dark/20 flex gap-4">
               <button 
                 onClick={() => setSelectedConfigItem(null)}
@@ -465,12 +466,13 @@ export function POS() {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
-
+ 
       {/* Existing Item Config Modal (Compliment) */}
-      {editingExistingItem && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 transition-all p-4">
+      {editingExistingItem && createPortal(
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 transition-all p-4 text-text-main">
           <div className="bg-surface rounded-2xl w-full max-w-md shadow-2xl overflow-hidden flex flex-col max-h-[90vh] border border-border">
             <div className="p-6 pb-4 border-b border-border flex items-center justify-between">
               <div className="flex items-center gap-2 text-brand-600 font-bold text-xs uppercase tracking-wider">
@@ -513,7 +515,7 @@ export function POS() {
                 </div>
               </div>
             </div>
-
+ 
             <div className="p-6 border-t border-border bg-surface-dark/20 flex gap-4">
               <button 
                 onClick={() => setEditingExistingItem(null)}
@@ -529,7 +531,8 @@ export function POS() {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

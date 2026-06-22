@@ -238,7 +238,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           <div className="absolute -top-20 -left-20 w-[500px] h-[500px] bg-brand-600/5 dark:bg-brand-600/10 rounded-full mix-blend-screen filter blur-[100px] pointer-events-none no-print"></div>
           <div className="absolute -bottom-40 -right-20 w-[600px] h-[600px] bg-purple-600/5 dark:bg-purple-600/10 rounded-full mix-blend-screen filter blur-[100px] pointer-events-none no-print"></div>
           
-          <div className="relative z-10 h-full">
+          <div className="relative h-full">
             {children}
           </div>
         </div>
