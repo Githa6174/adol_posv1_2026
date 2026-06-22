@@ -295,7 +295,7 @@ export function TableMap() {
                 onClick={handleActionPay}
                 className="w-full bg-surface hover:bg-surface-light text-white font-bold py-4 rounded-xl transition-colors border border-white/10 flex items-center justify-center gap-3"
               >
-                <span className="text-2xl">💰</span> Lihat Tagihan / Bayar
+                <span className="material-icons text-2xl">receipt_long</span> Lihat Tagihan / Bayar
               </button>
 
               <div className="border-t border-white/10 my-2"></div>
@@ -310,7 +310,7 @@ export function TableMap() {
                 }}
                 className="w-full bg-red-500/10 hover:bg-red-500/20 text-red-400 font-bold py-3 rounded-xl transition-colors border border-red-500/20 flex items-center justify-center gap-2"
               >
-                🗑️ Batalkan Pesanan
+                <span className="material-icons text-xl align-middle mr-1">delete</span> Batalkan Pesanan
               </button>
               
               <button 
@@ -328,7 +328,7 @@ export function TableMap() {
       {showPinModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[60]">
           <div className="glass p-8 rounded-3xl w-80 transform transition-all border border-red-500/30 shadow-2xl text-center shadow-red-500/20">
-            <div className="text-4xl mb-4">🔐</div>
+            <span className="material-icons text-5xl mb-4 text-red-400">admin_panel_settings</span>
             <h2 className="text-xl font-bold mb-2 text-white">Otorisasi Admin</h2>
             <p className="text-text-muted mb-6 text-sm">Masukkan PIN (Password Admin) untuk membatalkan pesanan.</p>
             
@@ -394,7 +394,7 @@ export function TableMap() {
                 <div className="mt-3 relative">
                   {selectedCustomer ? (
                     <div className="flex items-center gap-2 bg-orange-500/10 border border-orange-500/20 px-3 py-2 rounded-lg inline-flex">
-                      <span className="text-orange-400">🏅</span>
+                      <span className="material-icons text-base text-orange-400">loyalty</span>
                       <span className="text-orange-300 font-bold text-sm">{selectedCustomer.name}</span>
                       <span className="text-orange-400/50 text-xs">({selectedCustomer.points} Pts)</span>
                       <button onClick={() => setSelectedCustomer(null)} className="ml-2 text-text-muted hover:text-red-400">&times;</button>
@@ -403,7 +403,7 @@ export function TableMap() {
                     <div className="relative w-64">
                       <input 
                         type="text"
-                        placeholder="🔍 Pilih Pelanggan (CRM)..."
+                        placeholder="Pilih Pelanggan (CRM)..."
                         value={customerSearch}
                         onChange={(e) => setCustomerSearch(e.target.value)}
                         className="w-full px-3 py-1.5 bg-surface-dark border border-white/10 rounded-lg text-sm text-white focus:outline-none focus:border-orange-500"
@@ -417,7 +417,7 @@ export function TableMap() {
                               className="px-3 py-2 hover:bg-white/10 cursor-pointer text-sm flex justify-between items-center"
                             >
                               <span className="text-white font-medium">{c.name}</span>
-                              <span className="text-orange-400 text-xs">⭐ {c.points}</span>
+                              <span className="text-orange-400 text-xs flex items-center gap-1"><span className="material-icons text-sm">star</span> {c.points}</span>
                             </div>
                           ))}
                         </div>
@@ -573,7 +573,7 @@ export function TableMap() {
                 disabled={processing || cashAmount <= 0}
                 className="flex-[2] btn-primary py-4 text-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                {processing ? 'Memproses...' : (cashAmount >= sisaTagihan ? '✅ Lunas & Selesai' : '⏳ Bayar Sebagian')}
+                {processing ? 'Memproses...' : (cashAmount >= sisaTagihan ? <><span className="material-icons text-xl align-middle mr-1">check_circle</span> Lunas & Selesai</> : <><span className="material-icons text-xl align-middle mr-1">schedule</span> Bayar Sebagian</>)}
               </button>
             </div>
           </div>

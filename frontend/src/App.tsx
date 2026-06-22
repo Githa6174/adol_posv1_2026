@@ -52,13 +52,13 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         </div>
         <nav className="flex-1 px-4 space-y-2 mt-4">
           {user?.role === 'admin' && (
-            <Link to="/" className="block py-3 px-4 rounded-xl hover:bg-white/10 transition-colors font-medium">📊 Dashboard</Link>
+            <Link to="/" className="block py-3 px-4 rounded-xl hover:bg-white/10 transition-colors font-medium flex items-center gap-3"><span className="material-icons text-xl">dashboard</span> Dashboard</Link>
           )}
-          <Link to="/tables" className="block py-3 px-4 rounded-xl bg-brand-600/20 text-brand-300 border border-brand-500/30 font-bold shadow-[0_0_15px_rgba(59,130,246,0.2)]">🪑 Pilih Meja / Table</Link>
-          <Link to="/pos" className="block py-3 px-4 rounded-xl hover:bg-white/10 transition-colors font-medium">💻 Kasir (POS)</Link>
+          <Link to="/tables" className="flex items-center gap-3 py-3 px-4 rounded-xl bg-brand-600/20 text-brand-300 border border-brand-500/30 font-bold shadow-[0_0_15px_rgba(59,130,246,0.2)]"><span className="material-icons text-xl">table_restaurant</span> Pilih Meja / Table</Link>
+          <Link to="/pos" className="flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-white/10 transition-colors font-medium"><span className="material-icons text-xl">point_of_sale</span> Kasir (POS)</Link>
           
           {(user?.role === 'admin' || user?.role === 'kitchen') && (
-            <Link to="/kitchen" className="block py-3 px-4 rounded-xl hover:bg-white/10 transition-colors font-medium text-yellow-400/80 hover:text-yellow-400">🔥 Kitchen Display</Link>
+            <Link to="/kitchen" className="flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-white/10 transition-colors font-medium text-yellow-400/80 hover:text-yellow-400"><span className="material-icons text-xl">soup_kitchen</span> Kitchen Display</Link>
           )}
           
           {user?.role === 'admin' && (
@@ -69,13 +69,13 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                   onClick={() => setIsContactsOpen(!isContactsOpen)}
                   className="w-full flex items-center justify-between py-3 px-4 rounded-xl hover:bg-white/10 transition-colors font-medium text-left"
                 >
-                  <span>👥 Kontak & Pengguna</span>
+                  <span className="flex items-center gap-3"><span className="material-icons text-xl">people</span> Kontak & Pengguna</span>
                   <span className={`transform transition-transform ${isContactsOpen ? 'rotate-180' : ''}`}>▼</span>
                 </button>
                 {isContactsOpen && (
                   <div className="pl-8 pr-4 space-y-1 mt-1 border-l-2 border-white/5 ml-4">
-                    <Link to="/customers" className={`block py-2 px-3 rounded-lg text-sm hover:bg-white/10 transition-colors ${location.pathname === '/customers' ? 'bg-white/10 text-orange-400' : 'text-orange-400/70 hover:text-orange-300'}`}>🏅 Konsumen / Pelanggan</Link>
-                    <Link to="/users" className={`block py-2 px-3 rounded-lg text-sm hover:bg-white/10 transition-colors ${location.pathname === '/users' ? 'bg-white/10 text-blue-400' : 'text-blue-400/70 hover:text-blue-300'}`}>👨‍💼 Staff / Admin</Link>
+                    <Link to="/customers" className={`flex items-center gap-2 py-2 px-3 rounded-lg text-sm hover:bg-white/10 transition-colors ${location.pathname === '/customers' ? 'bg-white/10 text-orange-400' : 'text-orange-400/70 hover:text-orange-300'}`}><span className="material-icons text-base">loyalty</span> Konsumen / Pelanggan</Link>
+                    <Link to="/users" className={`flex items-center gap-2 py-2 px-3 rounded-lg text-sm hover:bg-white/10 transition-colors ${location.pathname === '/users' ? 'bg-white/10 text-blue-400' : 'text-blue-400/70 hover:text-blue-300'}`}><span className="material-icons text-base">badge</span> Staff / Admin</Link>
                   </div>
                 )}
               </div>
@@ -84,7 +84,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                   onClick={() => setIsProductsOpen(!isProductsOpen)}
                   className="w-full flex items-center justify-between py-3 px-4 rounded-xl hover:bg-white/10 transition-colors font-medium text-left"
                 >
-                  <span>📦 Products</span>
+                  <span className="flex items-center gap-3"><span className="material-icons text-xl">inventory_2</span> Products</span>
                   <span className={`transform transition-transform ${isProductsOpen ? 'rotate-180' : ''}`}>▼</span>
                 </button>
                 {isProductsOpen && (
@@ -99,7 +99,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                   </div>
                 )}
               </div>
-              <Link to="/expenses" className="block py-3 px-4 rounded-xl hover:bg-white/10 transition-colors font-medium text-red-400 hover:text-red-300">💸 Pengeluaran</Link>
+              <Link to="/expenses" className="flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-white/10 transition-colors font-medium text-red-400 hover:text-red-300"><span className="material-icons text-xl">account_balance_wallet</span> Pengeluaran</Link>
             </>
           )}
         </nav>
@@ -119,7 +119,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
               className="p-2 rounded-full bg-surface border border-[var(--color-border)] text-text-main hover:bg-surface-light transition-colors"
               title="Toggle Theme"
             >
-              {theme === 'dark' ? '🌞' : '🌙'}
+              <span className="material-icons text-lg">{theme === 'dark' ? 'light_mode' : 'dark_mode'}</span>
             </button>
           </div>
           <button onClick={handleLogout} className="w-full btn-secondary py-2 text-sm text-red-400 hover:text-red-300 border-red-500/20 hover:border-red-500/50 hover:bg-red-500/10">

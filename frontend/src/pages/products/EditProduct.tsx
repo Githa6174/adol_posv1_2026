@@ -324,7 +324,7 @@ export function EditProduct() {
         <div className="flex gap-4 sticky bottom-8 pt-4">
           <button type="button" onClick={() => navigate('/products/list')} className="flex-1 btn-secondary py-4 text-lg">Batal</button>
           <button type="submit" className="flex-[2] bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-2xl shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-all transform hover:scale-[1.01] text-lg">
-            💾 Simpan Produk
+            <span className="material-icons text-xl align-middle mr-1">save</span> Simpan Produk
           </button>
         </div>
       </form>

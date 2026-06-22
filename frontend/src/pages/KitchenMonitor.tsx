@@ -32,7 +32,7 @@ export function KitchenMonitor() {
   return (
     <div className="h-full bg-background text-text-main p-8 overflow-y-auto w-full relative">
       <div className="flex justify-between items-center mb-10 border-b border-white/5 pb-6 relative z-10">
-        <h1 className="text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">🔥 KITCHEN DISPLAY</h1>
+        <h1 className="text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center gap-4"><span className="material-icons text-5xl text-orange-500">soup_kitchen</span> KITCHEN DISPLAY</h1>
         <div className="text-3xl font-mono glass px-6 py-3 rounded-2xl text-green-400 font-bold border-green-500/20 shadow-[0_0_20px_rgba(34,197,94,0.1)]">
           {new Date().toLocaleTimeString('id-ID')}
         </div>
@@ -72,14 +72,14 @@ export function KitchenMonitor() {
                 onClick={() => handleMarkReady(orderItem.id)}
                 className="w-full bg-green-500 hover:bg-green-400 text-white font-black py-5 rounded-2xl text-xl transition-all mt-auto shadow-[0_0_20px_rgba(34,197,94,0.2)] hover:shadow-[0_0_30px_rgba(34,197,94,0.4)] hover:-translate-y-1"
               >
-                ✅ SELESAI (READY)
+                <span className="material-icons text-xl align-middle mr-2">check_circle</span> SELESAI (READY)
               </button>
             </div>
           </div>
         ))}
         {pendingItems.length === 0 && (
           <div className="col-span-full flex flex-col items-center justify-center mt-32 opacity-50">
-            <span className="text-8xl mb-6 grayscale">✨</span>
+            <span className="material-icons text-8xl mb-6 text-text-muted">restaurant</span>
             <div className="text-4xl font-light text-text-muted tracking-wide">
               Dapur Bersih. Tidak ada pesanan.
             </div>

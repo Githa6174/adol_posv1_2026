@@ -174,7 +174,7 @@ export function POS() {
                   >
                     <div className="flex-1">
                       <div className="font-bold text-white text-md flex items-center gap-2 group-hover:text-brand-300">
-                        <span>🔒</span> {orderItem.item.name}
+                                        <span className="material-icons text-base">lock</span> {orderItem.item.name}
                       </div>
                       <div className="text-xs text-brand-300 font-medium flex items-center gap-2 mt-1">
                         <span className="bg-brand-500/20 px-2 py-0.5 rounded">{orderItem.quantity}x</span>
@@ -198,7 +198,7 @@ export function POS() {
 
           {items.length === 0 && existingItems.length === 0 ? (
             <div className="text-center flex flex-col items-center justify-center h-full text-text-muted opacity-50 pt-10">
-              <span className="text-6xl mb-4 grayscale">🛒</span>
+              <span className="material-icons text-6xl mb-4 text-text-muted">shopping_cart</span>
               <p className="font-medium text-lg">Pilih menu di sebelah kiri</p>
             </div>
           ) : (
@@ -225,7 +225,7 @@ export function POS() {
                       )}
                       {orderItem.specialInstructions && (
                         <div className="text-xs text-yellow-400 mt-2 italic bg-yellow-400/10 p-2 rounded-lg border border-yellow-400/20">
-                          📝 {orderItem.specialInstructions}
+                          <span className="material-icons text-sm align-middle mr-1">sticky_note_2</span> {orderItem.specialInstructions}
                         </div>
                       )}
                     </div>
@@ -257,7 +257,7 @@ export function POS() {
             disabled={(items.length === 0 && existingItems.filter(i => i.isModified).length === 0) || submitting}
             className="w-full btn-primary py-4 text-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 shadow-[0_0_20px_rgba(59,130,246,0.3)]"
           >
-            <span className="text-2xl">👨‍🍳</span> 
+            <span className="material-icons text-2xl">soup_kitchen</span> 
             {submitting ? 'Menyimpan...' : 
              (activeOrderId 
                 ? (items.length > 0 ? 'Simpan & Kirim ke Dapur' : 'Simpan Perubahan Diskon') 
@@ -358,7 +358,7 @@ export function POS() {
           <div className="glass rounded-3xl w-full max-w-md transform transition-all border border-brand-500/30 shadow-2xl shadow-brand-500/20 overflow-hidden flex flex-col max-h-[90vh]">
             <div className="p-8 pb-4 border-b border-white/10 bg-surface/30">
               <div className="flex items-center gap-3 text-brand-300 font-bold text-sm tracking-widest uppercase mb-2">
-                <span>🔒</span> Menu Dapur
+                                <span className="material-icons text-base">lock</span> Menu Dapur
               </div>
               <h2 className="text-3xl font-black mb-2 text-white">{editingExistingItem.item.name}</h2>
               <div className="flex items-center gap-3 text-sm text-text-muted">
@@ -389,7 +389,7 @@ export function POS() {
                   />
                 </div>
                 <div className="mt-4 p-3 bg-brand-500/10 border border-brand-500/20 rounded-xl text-brand-200 text-xs flex items-start gap-2">
-                  <span className="text-lg">ℹ️</span>
+                  <span className="material-icons text-lg">info</span>
                   <p>Menerapkan diskon pada item ini akan secara otomatis memperbarui database dan menghitung ulang Grand Total tagihan secara seketika.</p>
                 </div>
               </div>
