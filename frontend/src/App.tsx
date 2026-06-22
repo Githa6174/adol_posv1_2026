@@ -24,6 +24,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const [isProductsOpen, setIsProductsOpen] = useState(location.pathname.startsWith('/products'));
   const [isContactsOpen, setIsContactsOpen] = useState(location.pathname === '/customers' || location.pathname === '/users');
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
+  const [isCollapsed, setIsCollapsed] = useState(localStorage.getItem('sidebar-collapsed') === 'true');
 
   useEffect(() => {
     if (theme === 'dark') {
@@ -36,6 +37,10 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     localStorage.setItem('theme', theme);
   }, [theme]);
 
+  useEffect(() => {
+    localStorage.setItem('sidebar-collapsed', String(isCollapsed));
+  }, [isCollapsed]);
+
   const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark');
 
   const handleLogout = () => {
@@ -43,43 +48,83 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     navigate('/login');
   };
 
+  const handleContactsClick = () => {
+    if (isCollapsed) {
+      setIsCollapsed(false);
+      setIsContactsOpen(true);
+    } else {
+      setIsContactsOpen(!isContactsOpen);
+    }
+  };
+
+  const handleProductsClick = () => {
+    if (isCollapsed) {
+      setIsCollapsed(false);
+      setIsProductsOpen(true);
+    } else {
+      setIsProductsOpen(!isProductsOpen);
+    }
+  };
+
   return (
     <div className="flex h-screen bg-background text-text-main overflow-hidden">
       {/* Sidebar - Solid Clean */}
-      <div className="w-64 bg-surface flex flex-col z-20 border-r border-border relative no-print shadow-sm">
-        <div className="p-6 border-b border-border">
+      <div className={`bg-surface flex flex-col z-20 border-r border-border relative no-print shadow-sm transition-all duration-300 ${isCollapsed ? 'w-20' : 'w-[280px]'}`}>
+        <div className={`border-b border-border flex transition-all duration-300 ${isCollapsed ? 'p-4 flex-col gap-3 items-center' : 'p-6 items-center justify-between'}`}>
           <h1 className="text-2xl font-extrabold tracking-tight text-brand-600 flex items-center gap-2">
-            <span className="material-icons text-brand-500">point_of_sale</span> ADOL<span className="text-text-main font-light text-xl">POS</span>
+            <span className="material-icons text-brand-500">point_of_sale</span>
+            {!isCollapsed && (
+              <span className="transition-opacity duration-300">
+                ADOL<span className="text-text-main font-light text-xl">POS</span>
+              </span>
+            )}
           </h1>
+          <button 
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className={`hover:bg-surface-dark text-text-muted hover:text-text-main transition-colors flex items-center justify-center cursor-pointer rounded-lg ${isCollapsed ? 'p-1' : 'p-1.5 bg-surface-dark border border-border'}`}
+            title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+          >
+            <span className="material-icons text-lg font-bold">
+              {isCollapsed ? 'chevron_right' : 'chevron_left'}
+            </span>
+          </button>
         </div>
         <nav className="flex-1 px-4 space-y-2 mt-4 overflow-y-auto no-scrollbar">
           {user?.role === 'admin' && (
             <Link 
               to="/" 
-              className={`flex items-center gap-3 py-3 px-4 rounded-xl transition-all ${location.pathname === '/' ? 'bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20 font-bold' : 'border border-transparent text-text-muted hover:bg-surface-dark hover:text-text-main font-medium'}`}
+              className={`flex items-center rounded-xl transition-all py-3 ${location.pathname === '/' ? 'bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20 font-bold' : 'border border-transparent text-text-muted hover:bg-surface-dark hover:text-text-main font-medium'} ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-4'}`}
+              title={isCollapsed ? "Dashboard" : ""}
             >
-              <span className="material-icons text-xl">dashboard</span>Dashboard
+              <span className="material-icons text-xl">dashboard</span>
+              {!isCollapsed && <span className="whitespace-nowrap">Dashboard</span>}
             </Link>
           )}
           <Link 
             to="/tables" 
-            className={`flex items-center gap-3 py-3 px-4 rounded-xl transition-all ${location.pathname === '/tables' ? 'bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20 font-bold' : 'border border-transparent text-text-muted hover:bg-surface-dark hover:text-text-main font-medium'}`}
+            className={`flex items-center rounded-xl transition-all py-3 ${location.pathname === '/tables' ? 'bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20 font-bold' : 'border border-transparent text-text-muted hover:bg-surface-dark hover:text-text-main font-medium'} ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-4'}`}
+            title={isCollapsed ? "Pilih Meja / Table" : ""}
           >
-            <span className="material-icons text-xl">table_restaurant</span>Pilih Meja / Table
+            <span className="material-icons text-xl">table_restaurant</span>
+            {!isCollapsed && <span className="whitespace-nowrap">Pilih Meja / Table</span>}
           </Link>
           <Link 
             to="/pos" 
-            className={`flex items-center gap-3 py-3 px-4 rounded-xl transition-all ${location.pathname === '/pos' ? 'bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20 font-bold' : 'border border-transparent text-text-muted hover:bg-surface-dark hover:text-text-main font-medium'}`}
+            className={`flex items-center rounded-xl transition-all py-3 ${location.pathname === '/pos' ? 'bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20 font-bold' : 'border border-transparent text-text-muted hover:bg-surface-dark hover:text-text-main font-medium'} ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-4'}`}
+            title={isCollapsed ? "Kasir (POS)" : ""}
           >
-            <span className="material-icons text-xl">point_of_sale</span>Kasir (POS)
+            <span className="material-icons text-xl">point_of_sale</span>
+            {!isCollapsed && <span className="whitespace-nowrap">Kasir (POS)</span>}
           </Link>
           
           {(user?.role === 'admin' || user?.role === 'kitchen') && (
             <Link 
               to="/kitchen" 
-              className={`flex items-center gap-3 py-3 px-4 rounded-xl transition-all ${location.pathname === '/kitchen' ? 'bg-amber-500/10 text-amber-600 dark:text-yellow-400 border border-amber-500/20 font-bold' : 'border border-transparent text-text-muted hover:bg-surface-dark hover:text-text-main font-medium'}`}
+              className={`flex items-center rounded-xl transition-all py-3 ${location.pathname === '/kitchen' ? 'bg-amber-500/10 text-amber-600 dark:text-yellow-400 border border-amber-500/20 font-bold' : 'border border-transparent text-text-muted hover:bg-surface-dark hover:text-text-main font-medium'} ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-4'}`}
+              title={isCollapsed ? "Kitchen Display" : ""}
             >
-              <span className="material-icons text-xl">soup_kitchen</span>Kitchen Display
+              <span className="material-icons text-xl">soup_kitchen</span>
+              {!isCollapsed && <span className="whitespace-nowrap">Kitchen Display</span>}
             </Link>
           )}
           
@@ -88,13 +133,17 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
               {/* Kontak / People Dropdown */}
               <div className="pt-2 pb-1">
                 <button 
-                  onClick={() => setIsContactsOpen(!isContactsOpen)}
-                  className={`w-full flex items-center justify-between py-3 px-4 rounded-xl hover:bg-surface-dark transition-all text-text-muted hover:text-text-main ${isContactsOpen ? 'font-bold' : 'font-medium'}`}
+                  onClick={handleContactsClick}
+                  className={`w-full flex items-center rounded-xl hover:bg-surface-dark transition-all text-text-muted hover:text-text-main cursor-pointer ${isContactsOpen && !isCollapsed ? 'font-bold' : 'font-medium'} ${isCollapsed ? 'justify-center px-0 py-3' : 'justify-between px-4 py-3'}`}
+                  title={isCollapsed ? "Kontak & Pengguna" : ""}
                 >
-                  <span className="flex items-center gap-3"><span className="material-icons text-xl">people</span>Kontak & Pengguna</span>
-                  <span className={`transform transition-transform ${isContactsOpen ? 'rotate-180' : ''}`}>▼</span>
+                  <span className={`flex items-center ${isCollapsed ? 'justify-center gap-0' : 'gap-3'}`}>
+                    <span className="material-icons text-xl">people</span>
+                    {!isCollapsed && <span className="whitespace-nowrap">Kontak & Pengguna</span>}
+                  </span>
+                  {!isCollapsed && <span className={`transform transition-transform ml-2 ${isContactsOpen ? 'rotate-180' : ''}`}>▼</span>}
                 </button>
-                {isContactsOpen && (
+                {!isCollapsed && isContactsOpen && (
                   <div className="pl-8 pr-4 space-y-1 mt-1 border-l-2 border-border ml-4">
                     <Link to="/customers" className={`flex items-center gap-2 py-2 px-3 rounded-lg text-sm hover:bg-surface-dark transition-colors ${location.pathname === '/customers' ? 'bg-surface-dark text-orange-600 dark:text-orange-400 font-bold' : 'text-text-muted hover:text-text-main'}`}><span className="material-icons text-base">loyalty</span>Konsumen / Pelanggan</Link>
                     <Link to="/users" className={`flex items-center gap-2 py-2 px-3 rounded-lg text-sm hover:bg-surface-dark transition-colors ${location.pathname === '/users' ? 'bg-surface-dark text-brand-600 dark:text-blue-400 font-bold' : 'text-text-muted hover:text-text-main'}`}><span className="material-icons text-base">badge</span>Staff / Admin</Link>
@@ -103,13 +152,17 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
               </div>
               <div className="pt-2 pb-1">
                 <button 
-                  onClick={() => setIsProductsOpen(!isProductsOpen)}
-                  className={`w-full flex items-center justify-between py-3 px-4 rounded-xl hover:bg-surface-dark transition-all text-text-muted hover:text-text-main ${isProductsOpen ? 'font-bold' : 'font-medium'}`}
+                  onClick={handleProductsClick}
+                  className={`w-full flex items-center rounded-xl hover:bg-surface-dark transition-all text-text-muted hover:text-text-main cursor-pointer ${isProductsOpen && !isCollapsed ? 'font-bold' : 'font-medium'} ${isCollapsed ? 'justify-center px-0 py-3' : 'justify-between px-4 py-3'}`}
+                  title={isCollapsed ? "Products" : ""}
                 >
-                  <span className="flex items-center gap-3"><span className="material-icons text-xl">inventory_2</span>Products</span>
-                  <span className={`transform transition-transform ${isProductsOpen ? 'rotate-180' : ''}`}>▼</span>
+                  <span className={`flex items-center ${isCollapsed ? 'justify-center gap-0' : 'gap-3'}`}>
+                    <span className="material-icons text-xl">inventory_2</span>
+                    {!isCollapsed && <span className="whitespace-nowrap">Products</span>}
+                  </span>
+                  {!isCollapsed && <span className={`transform transition-transform ml-2 ${isProductsOpen ? 'rotate-180' : ''}`}>▼</span>}
                 </button>
-                {isProductsOpen && (
+                {!isCollapsed && isProductsOpen && (
                   <div className="pl-8 pr-4 space-y-1 mt-1 border-l-2 border-border ml-4">
                     <Link to="/products/list" className={`block py-2 px-3 rounded-lg text-sm hover:bg-surface-light transition-colors ${location.pathname === '/products/list' ? 'bg-surface-light text-brand-600 dark:text-brand-400 font-bold' : 'text-text-muted hover:text-text-main'}`}>List Products</Link>
                     <Link to="/products/add" className={`block py-2 px-3 rounded-lg text-sm hover:bg-surface-light transition-colors ${location.pathname === '/products/add' ? 'bg-surface-light text-brand-600 dark:text-brand-400 font-bold' : 'text-text-muted hover:text-text-main'}`}>Add Product</Link>
@@ -123,9 +176,11 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
               </div>
               <Link 
                 to="/expenses" 
-                className={`flex items-center gap-3 py-3 px-4 rounded-xl transition-all ${location.pathname === '/expenses' ? 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 font-bold' : 'border border-transparent text-text-muted hover:bg-surface-dark hover:text-text-main font-medium'}`}
+                className={`flex items-center rounded-xl transition-all py-3 ${location.pathname === '/expenses' ? 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 font-bold' : 'border border-transparent text-text-muted hover:bg-surface-dark hover:text-text-main font-medium'} ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-4'}`}
+                title={isCollapsed ? "Pengeluaran" : ""}
               >
-                <span className="material-icons text-xl">account_balance_wallet</span>Pengeluaran
+                <span className="material-icons text-xl">account_balance_wallet</span>
+                {!isCollapsed && <span className="whitespace-nowrap">Pengeluaran</span>}
               </Link>
             </>
           )}
