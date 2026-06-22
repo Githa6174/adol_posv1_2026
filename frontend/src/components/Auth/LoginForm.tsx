@@ -29,34 +29,42 @@ export function LoginForm() {
   };
 
   return (
-    <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-lg">
-      <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">Login POS</h2>
+    <div className="w-full max-w-md glass-card p-10">
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-brand-400 to-purple-400 bg-clip-text text-transparent">
+          ADOL<span className="text-text-main font-light text-xl ml-1">POS</span>
+        </h1>
+        <p className="text-text-muted text-sm mt-2">Masuk ke sistem point of sale</p>
+      </div>
       
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-sm">
+        <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-xl mb-6 text-sm">
+          <span className="material-icons text-base align-middle mr-1">error_outline</span>
           {error}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label className="block text-gray-700 text-sm font-bold mb-2">Username</label>
+          <label className="block text-text-muted text-sm font-medium mb-2">Username</label>
           <input
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="input-field"
+            placeholder="Masukkan username"
             required
           />
         </div>
         
         <div>
-          <label className="block text-gray-700 text-sm font-bold mb-2">Password</label>
+          <label className="block text-text-muted text-sm font-medium mb-2">Password</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="input-field"
+            placeholder="Masukkan password"
             required
           />
         </div>
@@ -64,9 +72,9 @@ export function LoginForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+          className="w-full btn-primary py-3 px-4 mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? 'Processing...' : 'Masuk'}
+          {loading ? 'Memproses...' : 'Masuk'}
         </button>
       </form>
     </div>
