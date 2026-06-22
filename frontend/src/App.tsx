@@ -145,8 +145,8 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                 </button>
                 {!isCollapsed && isContactsOpen && (
                   <div className="pl-8 pr-4 space-y-1 mt-1 border-l-2 border-border ml-4">
-                    <Link to="/customers" className={`flex items-center gap-2 py-2 px-3 rounded-lg text-sm hover:bg-surface-dark transition-colors ${location.pathname === '/customers' ? 'bg-surface-dark text-orange-600 dark:text-orange-400 font-bold' : 'text-text-muted hover:text-text-main'}`}><span className="material-icons text-base">loyalty</span>Konsumen / Pelanggan</Link>
-                    <Link to="/users" className={`flex items-center gap-2 py-2 px-3 rounded-lg text-sm hover:bg-surface-dark transition-colors ${location.pathname === '/users' ? 'bg-surface-dark text-brand-600 dark:text-blue-400 font-bold' : 'text-text-muted hover:text-text-main'}`}><span className="material-icons text-base">badge</span>Staff / Admin</Link>
+                    <Link to="/customers" className={`flex items-center gap-2 py-2 px-3 rounded-lg text-sm hover:bg-surface-dark transition-colors ${location.pathname === '/customers' ? 'bg-surface-dark text-brand-600 dark:text-brand-400 font-bold' : 'text-text-muted hover:text-text-main'}`}><span className="material-icons text-base">loyalty</span>Konsumen / Pelanggan</Link>
+                    <Link to="/users" className={`flex items-center gap-2 py-2 px-3 rounded-lg text-sm hover:bg-surface-dark transition-colors ${location.pathname === '/users' ? 'bg-surface-dark text-brand-600 dark:text-brand-400 font-bold' : 'text-text-muted hover:text-text-main'}`}><span className="material-icons text-base">badge</span>Staff / Admin</Link>
                   </div>
                 )}
               </div>
