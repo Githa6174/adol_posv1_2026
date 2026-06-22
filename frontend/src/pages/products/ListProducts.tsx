@@ -89,8 +89,20 @@ export function ListProducts() {
                     Rp {item.price_level_1?.toLocaleString('id-ID') || 0}
                   </td>
                   <td className="py-4 text-right">
-                    <Link to={`/products/edit/${item.id}`} className="text-blue-500 hover:underline mr-4 font-medium">Edit</Link>
-                    <button onClick={() => handleDelete(item.id)} className="text-red-500 hover:underline font-medium">Delete</button>
+                    <div className="flex items-center justify-end gap-3">
+                      <Link 
+                        to={`/products/edit/${item.id}`} 
+                        className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-brand-600 dark:text-brand-300 bg-brand-highlight border border-brand-highlight hover:bg-brand-highlight-hover transition-all font-bold text-xs active:scale-95 shadow-sm"
+                      >
+                        <span className="material-icons text-sm">edit</span>Edit
+                      </Link>
+                      <button 
+                        onClick={() => handleDelete(item.id)} 
+                        className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-red-600 dark:text-red-400 bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 transition-all font-bold text-xs active:scale-95 cursor-pointer shadow-sm"
+                      >
+                        <span className="material-icons text-sm">delete</span>Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))

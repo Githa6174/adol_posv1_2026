@@ -93,7 +93,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           {user?.role === 'admin' && (
             <Link 
               to="/" 
-              className={`flex items-center rounded-xl transition-all py-3 ${location.pathname === '/' ? 'bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20 font-bold' : 'border border-transparent text-text-muted hover:bg-surface-dark hover:text-text-main font-medium'} ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-4'}`}
+              className={`flex items-center rounded-xl transition-all py-3 ${location.pathname === '/' ? 'bg-brand-highlight text-brand-600 dark:text-brand-300 border border-brand-highlight font-bold' : 'border border-transparent text-text-muted hover:bg-surface-dark hover:text-text-main font-medium'} ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-4'}`}
               title={isCollapsed ? "Dashboard" : ""}
             >
               <span className="material-icons text-xl">dashboard</span>
@@ -102,7 +102,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           )}
           <Link 
             to="/tables" 
-            className={`flex items-center rounded-xl transition-all py-3 ${location.pathname === '/tables' ? 'bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20 font-bold' : 'border border-transparent text-text-muted hover:bg-surface-dark hover:text-text-main font-medium'} ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-4'}`}
+            className={`flex items-center rounded-xl transition-all py-3 ${location.pathname === '/tables' ? 'bg-brand-highlight text-brand-600 dark:text-brand-300 border border-brand-highlight font-bold' : 'border border-transparent text-text-muted hover:bg-surface-dark hover:text-text-main font-medium'} ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-4'}`}
             title={isCollapsed ? "Pilih Meja / Table" : ""}
           >
             <span className="material-icons text-xl">table_restaurant</span>
@@ -110,7 +110,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           </Link>
           <Link 
             to="/pos" 
-            className={`flex items-center rounded-xl transition-all py-3 ${location.pathname === '/pos' ? 'bg-brand-500/10 text-brand-600 dark:text-brand-300 border border-brand-500/20 font-bold' : 'border border-transparent text-text-muted hover:bg-surface-dark hover:text-text-main font-medium'} ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-4'}`}
+            className={`flex items-center rounded-xl transition-all py-3 ${location.pathname === '/pos' ? 'bg-brand-highlight text-brand-600 dark:text-brand-300 border border-brand-highlight font-bold' : 'border border-transparent text-text-muted hover:bg-surface-dark hover:text-text-main font-medium'} ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-4'}`}
             title={isCollapsed ? "Kasir (POS)" : ""}
           >
             <span className="material-icons text-xl">point_of_sale</span>
@@ -120,7 +120,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           {(user?.role === 'admin' || user?.role === 'kitchen') && (
             <Link 
               to="/kitchen" 
-              className={`flex items-center rounded-xl transition-all py-3 ${location.pathname === '/kitchen' ? 'bg-amber-500/10 text-amber-600 dark:text-yellow-400 border border-amber-500/20 font-bold' : 'border border-transparent text-text-muted hover:bg-surface-dark hover:text-text-main font-medium'} ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-4'}`}
+              className={`flex items-center rounded-xl transition-all py-3 ${location.pathname === '/kitchen' ? 'bg-amber-highlight text-amber-600 dark:text-yellow-400 border border-amber-highlight font-bold' : 'border border-transparent text-text-muted hover:bg-surface-dark hover:text-text-main font-medium'} ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-4'}`}
               title={isCollapsed ? "Kitchen Display" : ""}
             >
               <span className="material-icons text-xl">soup_kitchen</span>
@@ -176,7 +176,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
               </div>
               <Link 
                 to="/expenses" 
-                className={`flex items-center rounded-xl transition-all py-3 ${location.pathname === '/expenses' ? 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 font-bold' : 'border border-transparent text-text-muted hover:bg-surface-dark hover:text-text-main font-medium'} ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-4'}`}
+                className={`flex items-center rounded-xl transition-all py-3 ${location.pathname === '/expenses' ? 'bg-red-highlight text-red-600 dark:text-red-400 border border-red-highlight font-bold' : 'border border-transparent text-text-muted hover:bg-surface-dark hover:text-text-main font-medium'} ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-4'}`}
                 title={isCollapsed ? "Pengeluaran" : ""}
               >
                 <span className="material-icons text-xl">account_balance_wallet</span>
