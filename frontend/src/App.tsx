@@ -16,6 +16,7 @@ import { Variations } from './pages/products/Variations';
 import { Categories } from './pages/products/Categories';
 import { EditProduct } from './pages/products/EditProduct';
 import { useAuthStore } from './stores/authStore';
+import { ToastContainer } from './components/Common/ToastContainer';
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const { user, logout } = useAuthStore();
@@ -322,6 +323,7 @@ function App() {
           } 
         />
       </Routes>
+      <ToastContainer />
     </BrowserRouter>
   );
 }

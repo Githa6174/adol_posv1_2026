@@ -5,6 +5,7 @@ import { itemService } from '../services/itemService';
 import { orderService } from '../services/orderService';
 import { tableService } from '../services/tableService';
 import { useOrderStore } from '../stores/orderStore';
+import { useToastStore } from '../stores/toastStore';
 
 export function POS() {
   const [menuItems, setMenuItems] = useState<any[]>([]);
@@ -19,6 +20,7 @@ export function POS() {
 
   const { items, existingItems, addItem, removeItem, clearOrder, getSubtotal, selectedTable, activeOrderId, activeOrderNumber } = useOrderStore();
   const [submitting, setSubmitting] = useState(false);
+  const showToast = useToastStore((state) => state.showToast);
   
   // Modal State for Item Config
   const [selectedConfigItem, setSelectedConfigItem] = useState<any>(null);
@@ -145,19 +147,19 @@ export function POS() {
       
       if (activeOrderId) {
         await orderService.addItemsToOrder(activeOrderId, { items: orderData.items, updated_items: orderData.updated_items });
-        alert('Perubahan berhasil disimpan!');
+        showToast('Perubahan berhasil disimpan!');
       } else {
         await orderService.createOrder(orderData);
         if (selectedTable?.id) {
           await tableService.updateStatus(selectedTable.id, 'occupied');
         }
-        alert('Pesanan baru berhasil dikirim ke Dapur!');
+        showToast('Pesanan baru berhasil dikirim ke dapur!');
       }
       
       clearOrder();
       navigate('/tables'); // Go back to table map
     } catch (error: any) {
-      alert('Gagal mengirim pesanan: ' + error.message);
+      showToast('Gagal mengirim pesanan: ' + error.message, 'error');
     } finally {
       setSubmitting(false);
     }
