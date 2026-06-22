@@ -10,51 +10,62 @@ export function AddProduct() {
 
   // Reference Data
   const [categories, setCategories] = useState<any[]>([]);
+  const [departments, setDepartments] = useState<any[]>([]);
   const [brands, setBrands] = useState<any[]>([]);
   const [units, setUnits] = useState<any[]>([]);
+  const [warranties, setWarranties] = useState<any[]>([]);
   const [variationTemplates, setVariationTemplates] = useState<any[]>([]);
 
   // Form State
   const [formData, setFormData] = useState({
     name: '',
     sku: '',
-    code: '', // internal code
+    code: '',
     barcode_type: 'C128',
+    description: '',
     category_id: '',
+    department_id: '',
     brand_id: '',
     unit_id: '',
     warranty_id: '',
     manage_stock: false,
     alert_quantity: 0,
     current_stock: 0,
-    type: 'single', // single or variable
+    type: 'single',
     price_level_1: 0,
     price_level_2: 0,
     price_level_3: 0,
     price_level_4: 0,
     price_level_5: 0,
     tax_percentage: 0,
-    service_percentage: 0
+    service_percentage: 0,
+    is_require_printing: true,
+    printer_location: '',
+    is_show_kitchen_monitor: true,
+    image: ''
   });
 
-  // Variables for variable product
+  const [hasImage, setHasImage] = useState(false);
   const [generatedVariations, setGeneratedVariations] = useState<any[]>([]);
 
   useEffect(() => {
-    // Fetch all required references
     const fetchData = async () => {
       try {
         const headers = { Authorization: `Bearer ${token}` };
-        const [catRes, brandRes, unitRes, varRes] = await Promise.all([
+        const [catRes, deptRes, brandRes, unitRes, warrantyRes, varRes] = await Promise.all([
           fetch(`${API_URL}/items/categories`, { headers }),
+          fetch(`${API_URL}/items/departments`, { headers }),
           fetch(`${API_URL}/product-settings/brands`, { headers }),
           fetch(`${API_URL}/product-settings/units`, { headers }),
+          fetch(`${API_URL}/product-settings/warranties`, { headers }),
           fetch(`${API_URL}/product-settings/variations`, { headers })
         ]);
 
         if (catRes.ok) setCategories(await catRes.json());
+        if (deptRes.ok) setDepartments(await deptRes.json());
         if (brandRes.ok) setBrands(await brandRes.json());
         if (unitRes.ok) setUnits(await unitRes.json());
+        if (warrantyRes.ok) setWarranties(await warrantyRes.json());
         if (varRes.ok) setVariationTemplates(await varRes.json());
       } catch (err) {
         console.error('Failed to load references', err);
@@ -67,7 +78,6 @@ export function AddProduct() {
     const template = variationTemplates.find(v => v.id.toString() === templateId);
     
     if (template) {
-      // Auto generate variations options
       const rows = template.options.map((opt: any) => ({
         variation_option_id: opt.id,
         option_name: opt.name,
@@ -87,9 +97,11 @@ export function AddProduct() {
     const payload = {
       ...formData,
       category_id: formData.category_id ? Number(formData.category_id) : null,
+      department_id: formData.department_id ? Number(formData.department_id) : null,
       brand_id: formData.brand_id ? Number(formData.brand_id) : null,
       unit_id: formData.unit_id ? Number(formData.unit_id) : null,
       warranty_id: formData.warranty_id ? Number(formData.warranty_id) : null,
+      image: hasImage ? formData.image : null,
       variations: formData.type === 'variable' ? generatedVariations : []
     };
 
@@ -120,15 +132,15 @@ export function AddProduct() {
             <h1 className="text-4xl font-bold text-text-main mb-2">Add New Product</h1>
             <p className="text-text-muted">Isi form di bawah ini untuk menambahkan produk baru ke sistem.</p>
           </div>
-          <button onClick={() => navigate('/products/list')} className="text-text-muted hover:text-text-main transition-colors underline">
+          <button onClick={() => navigate('/products/list')} className="text-text-muted hover:text-text-main transition-colors underline cursor-pointer">
             Kembali ke List
           </button>
         </div>
 
-        <form onSubmit={handleSave} className="space-y-6">
-          {/* Section 1: General Info */}
+        <form onSubmit={handleSave} className="space-y-8">
+          {/* Section 1: General & Classification */}
           <div className="glass rounded-3xl p-8 border border-border">
-            <h2 className="text-2xl font-bold text-text-main mb-6 border-b border-border pb-4">General Information</h2>
+            <h2 className="text-2xl font-bold text-text-main mb-6 border-b border-border pb-4">General & Classification</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-text-muted mb-2">Product Name *</label>
@@ -156,23 +168,88 @@ export function AddProduct() {
               </div>
 
               <div>
+                <label className="block text-sm font-medium text-text-muted mb-2">Department</label>
+                <select value={formData.department_id} onChange={e => setFormData({...formData, department_id: e.target.value})} className="input-field w-full">
+                  <option value="" className="bg-surface text-text-main">Pilih Department...</option>
+                  {departments.map(d => <option key={d.id} value={d.id} className="bg-surface text-text-main">{d.name}</option>)}
+                </select>
+              </div>
+              <div>
                 <label className="block text-sm font-medium text-text-muted mb-2">Brand</label>
                 <select value={formData.brand_id} onChange={e => setFormData({...formData, brand_id: e.target.value})} className="input-field w-full">
                   <option value="" className="bg-surface text-text-main">Pilih Brand...</option>
                   {brands.map(b => <option key={b.id} value={b.id} className="bg-surface text-text-main">{b.name}</option>)}
                 </select>
               </div>
+
               <div>
-                <label className="block text-sm font-medium text-text-muted mb-2">Unit</label>
+                <label className="block text-sm font-medium text-text-muted mb-2">Unit (Satuan)</label>
                 <select value={formData.unit_id} onChange={e => setFormData({...formData, unit_id: e.target.value})} className="input-field w-full">
                   <option value="" className="bg-surface text-text-main">Pilih Satuan...</option>
                   {units.map(u => <option key={u.id} value={u.id} className="bg-surface text-text-main">{u.name}</option>)}
                 </select>
               </div>
+              <div>
+                <label className="block text-sm font-medium text-text-muted mb-2">Warranty (Garansi)</label>
+                <select value={formData.warranty_id} onChange={e => setFormData({...formData, warranty_id: e.target.value})} className="input-field w-full">
+                  <option value="" className="bg-surface text-text-main">Tanpa Garansi...</option>
+                  {warranties.map(w => <option key={w.id} value={w.id} className="bg-surface text-text-main">{w.name} ({w.duration} {w.duration_type})</option>)}
+                </select>
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-text-muted mb-2">Description</label>
+                <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="input-field w-full h-24 resize-none" placeholder="Deskripsi produk atau detail tambahan..." />
+              </div>
             </div>
           </div>
 
-          {/* Section 2: Product Type & Variations */}
+          {/* Section 2: Product Image */}
+          <div className="glass rounded-3xl p-8 border border-border">
+            <h2 className="text-2xl font-bold text-text-main mb-6 border-b border-border pb-4">Product Image (Gambar Produk)</h2>
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <input 
+                  type="checkbox" 
+                  id="hasImage" 
+                  checked={hasImage} 
+                  onChange={e => {
+                    setHasImage(e.target.checked);
+                    if (!e.target.checked) setFormData({...formData, image: ''});
+                  }} 
+                  className="w-5 h-5 rounded border-border bg-background text-brand-500 focus:ring-brand-500 focus:ring-offset-background cursor-pointer" 
+                />
+                <label htmlFor="hasImage" className="text-text-main font-bold cursor-pointer">Tambahkan Gambar Produk?</label>
+              </div>
+              
+              {hasImage && (
+                <div className="mt-4 transition-all duration-300">
+                  <label className="block text-sm font-medium text-text-muted mb-2">Image URL / Path</label>
+                  <input 
+                    type="text" 
+                    value={formData.image} 
+                    onChange={e => setFormData({...formData, image: e.target.value})} 
+                    className="input-field w-full" 
+                    placeholder="e.g. https://images.unsplash.com/... atau path lokal /images/coffee.jpg" 
+                  />
+                  {formData.image && (
+                    <div className="mt-4 border border-border p-2 rounded-2xl w-32 h-32 flex items-center justify-center bg-surface-dark overflow-hidden">
+                      <img 
+                        src={formData.image} 
+                        alt="Preview" 
+                        className="w-full h-full object-cover rounded-xl" 
+                        onError={(e: any) => {
+                          e.target.src = 'https://placehold.co/150?text=Invalid+URL';
+                        }} 
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Section 3: Product Type & Variations */}
           <div className="glass rounded-3xl p-8 border border-border">
             <h2 className="text-2xl font-bold text-text-main mb-6 border-b border-border pb-4">Tipe Produk & Variasi</h2>
             <div className="mb-6">
@@ -243,45 +320,102 @@ export function AddProduct() {
             )}
           </div>
 
-          {/* Section 3: Pricing (If Single) */}
+          {/* Section 4: Pricing Levels & Taxes */}
+          <div className="glass rounded-3xl p-8 border border-border">
+            <h2 className="text-2xl font-bold text-text-main mb-6 border-b border-border pb-4">Harga Jual & Pajak</h2>
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-text-muted mb-2">Harga Jual Dasar (L1) *</label>
+                  <input type="number" required value={formData.price_level_1} onChange={e => setFormData({...formData, price_level_1: Number(e.target.value)})} className="input-field w-full text-xl font-bold text-green-600 dark:text-green-400" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-text-muted mb-2">Harga GoFood/GrabFood (L2)</label>
+                  <input type="number" value={formData.price_level_2} onChange={e => setFormData({...formData, price_level_2: Number(e.target.value)})} className="input-field w-full text-lg" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-text-muted mb-2">Harga ShopeeFood (L3)</label>
+                  <input type="number" value={formData.price_level_3} onChange={e => setFormData({...formData, price_level_3: Number(e.target.value)})} className="input-field w-full text-lg" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-text-muted mb-2">Harga Member / Loyalty (L4)</label>
+                  <input type="number" value={formData.price_level_4} onChange={e => setFormData({...formData, price_level_4: Number(e.target.value)})} className="input-field w-full" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-text-muted mb-2">Harga Grosir (L5)</label>
+                  <input type="number" value={formData.price_level_5} onChange={e => setFormData({...formData, price_level_5: Number(e.target.value)})} className="input-field w-full" />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-border pt-6">
+                <div>
+                  <label className="block text-sm font-medium text-text-muted mb-2">Pajak PPN (%)</label>
+                  <input type="number" step="0.01" value={formData.tax_percentage} onChange={e => setFormData({...formData, tax_percentage: Number(e.target.value)})} className="input-field w-full" placeholder="e.g. 11" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-text-muted mb-2">Service Charge (%)</label>
+                  <input type="number" step="0.01" value={formData.service_percentage} onChange={e => setFormData({...formData, service_percentage: Number(e.target.value)})} className="input-field w-full" placeholder="e.g. 10" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 5: Print & Kitchen Display Options */}
+          <div className="glass rounded-3xl p-8 border border-border">
+            <h2 className="text-2xl font-bold text-text-main mb-6 border-b border-border pb-4">Printer & Kitchen settings</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <input type="checkbox" id="isRequirePrinting" checked={formData.is_require_printing} onChange={e => setFormData({...formData, is_require_printing: e.target.checked})} className="w-5 h-5 rounded border-border bg-background text-brand-500 focus:ring-brand-500 focus:ring-offset-background cursor-pointer" />
+                  <label htmlFor="isRequirePrinting" className="text-text-main font-semibold cursor-pointer">Print Ticket Transaksi</label>
+                </div>
+                <div className="flex items-center gap-3">
+                  <input type="checkbox" id="isShowKitchenMonitor" checked={formData.is_show_kitchen_monitor} onChange={e => setFormData({...formData, is_show_kitchen_monitor: e.target.checked})} className="w-5 h-5 rounded border-border bg-background text-brand-500 focus:ring-brand-500 focus:ring-offset-background cursor-pointer" />
+                  <label htmlFor="isShowKitchenMonitor" className="text-text-main font-semibold cursor-pointer">Tampilkan di Kitchen Display Monitor</label>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-text-muted mb-2">Lokasi / Kategori Printer</label>
+                <select value={formData.printer_location} onChange={e => setFormData({...formData, printer_location: e.target.value})} className="input-field w-full">
+                  <option value="" className="bg-surface text-text-main">Pilih Lokasi Printer...</option>
+                  <option value="Kitchen" className="bg-surface text-text-main">Dapur / Kitchen</option>
+                  <option value="Bar" className="bg-surface text-text-main">Bar / Minuman</option>
+                  <option value="Cashier" className="bg-surface text-text-main">Kasir Utama</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 6: Inventory Stock Control (If Single) */}
           {formData.type === 'single' && (
             <div className="glass rounded-3xl p-8 border border-border">
-              <h2 className="text-2xl font-bold text-text-main mb-6 border-b border-border pb-4">Harga & Stok</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-text-muted mb-2">Harga Jual Dasar (Level 1)</label>
-                  <input type="number" value={formData.price_level_1} onChange={e => setFormData({...formData, price_level_1: Number(e.target.value)})} className="input-field w-full text-xl font-bold text-green-600 dark:text-green-400" />
+              <h2 className="text-2xl font-bold text-text-main mb-6 border-b border-border pb-4">Kontrol Stok</h2>
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 mb-4">
+                  <input type="checkbox" id="manageStock" checked={formData.manage_stock} onChange={e => setFormData({...formData, manage_stock: e.target.checked})} className="w-5 h-5 rounded border-border bg-background text-brand-500 focus:ring-brand-500 focus:ring-offset-background cursor-pointer" />
+                  <label htmlFor="manageStock" className="text-text-main font-bold cursor-pointer">Kelola Stok Produk (Manage Stock)</label>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-text-muted mb-2">Harga GoFood/GrabFood (Level 2)</label>
-                  <input type="number" value={formData.price_level_2} onChange={e => setFormData({...formData, price_level_2: Number(e.target.value)})} className="input-field w-full" />
-                </div>
-                <div className="col-span-2 border-t border-border my-2 pt-4">
-                  <div className="flex items-center gap-3 mb-4">
-                    <input type="checkbox" id="manageStock" checked={formData.manage_stock} onChange={e => setFormData({...formData, manage_stock: e.target.checked})} className="w-5 h-5 rounded border-border bg-background text-brand-500 focus:ring-brand-500 focus:ring-offset-background" />
-                    <label htmlFor="manageStock" className="text-text-main font-bold cursor-pointer">Kelola Stok (Manage Stock)</label>
-                  </div>
-                  
-                  {formData.manage_stock && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-surface-dark/30 p-4 rounded-xl border border-border">
-                      <div>
-                        <label className="block text-sm font-medium text-text-muted mb-2">Stok Saat Ini</label>
-                        <input type="number" value={formData.current_stock} onChange={e => setFormData({...formData, current_stock: Number(e.target.value)})} className="input-field w-full" />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-text-muted mb-2">Batas Minimum (Alert)</label>
-                        <input type="number" value={formData.alert_quantity} onChange={e => setFormData({...formData, alert_quantity: Number(e.target.value)})} className="input-field w-full" />
-                      </div>
+                
+                {formData.manage_stock && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-surface-dark/30 p-6 rounded-2xl border border-border">
+                    <div>
+                      <label className="block text-sm font-medium text-text-muted mb-2">Stok Awal</label>
+                      <input type="number" value={formData.current_stock} onChange={e => setFormData({...formData, current_stock: Number(e.target.value)})} className="input-field w-full" />
                     </div>
-                  )}
-                </div>
+                    <div>
+                      <label className="block text-sm font-medium text-text-muted mb-2">Batas Minimum Peringatan (Alert)</label>
+                      <input type="number" value={formData.alert_quantity} onChange={e => setFormData({...formData, alert_quantity: Number(e.target.value)})} className="input-field w-full" />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}
 
           <div className="flex gap-4 pt-8">
-            <button type="button" onClick={() => navigate('/products/list')} className="flex-1 btn-secondary py-4 text-lg">Batal</button>
-            <button type="submit" className="flex-[2] btn-primary text-white font-bold rounded-2xl shadow-lg shadow-brand-500/20 transition-all transform hover:scale-[1.01] text-lg py-4">
+            <button type="button" onClick={() => navigate('/products/list')} className="flex-1 btn-secondary py-4 text-lg cursor-pointer">Batal</button>
+            <button type="submit" className="flex-[2] btn-primary text-white font-bold rounded-2xl shadow-lg shadow-brand-500/20 transition-all transform hover:scale-[1.01] text-lg py-4 cursor-pointer">
               <span className="material-icons text-xl align-middle mr-1">save</span> Simpan Produk
             </button>
           </div>

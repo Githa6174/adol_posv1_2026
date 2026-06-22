@@ -151,6 +151,7 @@ model Item {
   printer_location        String?
   
   is_show_kitchen_monitor Boolean? @default(true)
+  image                   String?
   
   is_active               Boolean? @default(true)
   created_at              DateTime @default(now())
