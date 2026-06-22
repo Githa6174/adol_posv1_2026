@@ -7,6 +7,15 @@ import { useOrderStore } from '../stores/orderStore';
 
 export function POS() {
   const [menuItems, setMenuItems] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | 'all'>('all');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Drag-scroll states
+  const [isDown, setIsDown] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
   const { items, existingItems, addItem, removeItem, clearOrder, getSubtotal, selectedTable, activeOrderId, activeOrderNumber } = useOrderStore();
   const [submitting, setSubmitting] = useState(false);
   
@@ -25,7 +34,38 @@ export function POS() {
 
   useEffect(() => {
     itemService.getItems().then(setMenuItems).catch(console.error);
+    itemService.getCategories().then(setCategories).catch(console.error);
   }, []);
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    setIsDown(true);
+    setStartX(e.pageX - e.currentTarget.offsetLeft);
+    setScrollLeft(e.currentTarget.scrollLeft);
+  };
+
+  const handleMouseLeave = () => {
+    setIsDown(false);
+  };
+
+  const handleMouseUp = () => {
+    setIsDown(false);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - e.currentTarget.offsetLeft;
+    const walk = (x - startX) * 2;
+    e.currentTarget.scrollLeft = scrollLeft - walk;
+  };
+
+  const filteredMenuItems = menuItems.filter(item => {
+    const matchesCategory = selectedCategoryId === 'all' || item.category_id === selectedCategoryId;
+    const matchesSearch = !searchQuery || 
+      item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      (item.sku && item.sku.toLowerCase().includes(searchQuery.toLowerCase()));
+    return matchesCategory && matchesSearch;
+  });
 
   const openItemConfig = (item: any) => {
     setSelectedConfigItem(item);
@@ -147,15 +187,41 @@ export function POS() {
               <input 
                 type="text" 
                 placeholder="Search products by name, SKU or barcode..." 
-                className="w-full bg-surface border border-[var(--color-border)] rounded-xl pl-10 pr-10 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all shadow-sm"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="w-full bg-surface border border-border rounded-xl pl-10 pr-10 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all shadow-sm text-text-main"
               />
+              {searchQuery && (
+                <button 
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-10 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main transition-colors p-1"
+                >
+                  <span className="material-icons text-sm">close</span>
+                </button>
+              )}
               <span className="material-icons absolute right-3 top-1/2 -translate-y-1/2 text-brand-500 cursor-pointer">qr_code_scanner</span>
             </div>
             
-            <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 flex-1">
-              {['All Items', 'Coffee', 'Tea', 'Pastries', 'Meals', 'Snacks'].map((cat, i) => (
-                <button key={i} className={`whitespace-nowrap px-4 py-2 rounded-xl text-sm font-semibold transition-colors border ${i === 0 ? 'bg-brand-600 text-white border-brand-600' : 'bg-surface text-text-muted border-[var(--color-border)] hover:bg-surface-dark hover:text-text-main'}`}>
-                  {cat}
+            <div 
+              className="flex gap-2 overflow-x-auto no-scrollbar pb-1 flex-1 select-none active:cursor-grabbing cursor-grab"
+              onMouseDown={handleMouseDown}
+              onMouseLeave={handleMouseLeave}
+              onMouseUp={handleMouseUp}
+              onMouseMove={handleMouseMove}
+            >
+              <button 
+                onClick={() => setSelectedCategoryId('all')} 
+                className={`whitespace-nowrap px-4 py-2 rounded-xl text-sm font-bold transition-all border ${selectedCategoryId === 'all' ? 'bg-brand-highlight text-brand-600 dark:text-brand-300 border-brand-highlight shadow-sm' : 'bg-surface text-text-muted border-border hover:bg-surface-dark hover:text-text-main'}`}
+              >
+                All Items
+              </button>
+              {categories.map((cat) => (
+                <button 
+                  key={cat.id} 
+                  onClick={() => setSelectedCategoryId(cat.id)} 
+                  className={`whitespace-nowrap px-4 py-2 rounded-xl text-sm font-bold transition-all border ${selectedCategoryId === cat.id ? 'bg-brand-highlight text-brand-600 dark:text-brand-300 border-brand-highlight shadow-sm' : 'bg-surface text-text-muted border-border hover:bg-surface-dark hover:text-text-main'}`}
+                >
+                  {cat.name}
                 </button>
               ))}
             </div>
@@ -165,7 +231,7 @@ export function POS() {
         {/* Product Grid */}
         <div className="flex-1 p-8 overflow-y-auto custom-scrollbar">
           <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
-            {menuItems.map(item => (
+            {filteredMenuItems.map(item => (
               <button
                 key={item.id}
                 onClick={() => openItemConfig(item)}

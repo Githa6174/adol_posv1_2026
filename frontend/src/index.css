@@ -57,6 +57,27 @@
   body {
     @apply bg-background text-text-main font-sans antialiased transition-colors duration-300;
   }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--color-text-muted) 20%, transparent) transparent;
+  }
+
+  /* Custom Webkit Scrollbars */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: color-mix(in srgb, var(--color-text-muted) 25%, transparent);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: color-mix(in srgb, var(--color-text-muted) 45%, transparent);
+  }
 }
 
 @layer utilities {
@@ -104,6 +125,14 @@
   }
   .bg-amber-highlight-hover:hover {
     background-color: color-mix(in srgb, #f59e0b 20%, transparent);
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }
 
