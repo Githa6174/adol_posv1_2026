@@ -1,0 +1,377 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String     @id @default(uuid())
+  username   String     @unique
+  password   String
+  name       String?
+  email      String?
+  role       String?
+  is_active  Boolean    @default(true)
+  created_at DateTime   @default(now())
+  updated_at DateTime   @default(now())
+
+  orders       Order[]
+  payments     Payment[]
+  audit_logs   AuditLog[]
+  expenses     Expense[]
+
+  @@map("users")
+}
+
+model Customer {
+  id         Int      @id @default(autoincrement())
+  name       String
+  phone      String?
+  email      String?
+  points     Int      @default(0)
+  is_member  Boolean  @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+
+  orders     Order[]
+
+  @@map("customers")
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  created_at  DateTime @default(now())
+
+  items       Item[]
+
+  @@map("categories")
+}
+
+model Department {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  created_at  DateTime @default(now())
+
+  items       Item[]
+
+  @@map("departments")
+}
+
+model Brand {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  created_at  DateTime @default(now())
+
+  items       Item[]
+
+  @@map("brands")
+}
+
+model Unit {
+  id            Int      @id @default(autoincrement())
+  name          String
+  short_name    String
+  allow_decimal Boolean  @default(false)
+  created_at    DateTime @default(now())
+
+  items         Item[]
+
+  @@map("units")
+}
+
+model Warranty {
+  id            Int      @id @default(autoincrement())
+  name          String
+  description   String?
+  duration      Int      @default(0)
+  duration_type String   @default("months") // days, months, years
+  created_at    DateTime @default(now())
+
+  items         Item[]
+
+  @@map("warranties")
+}
+
+model Variation {
+  id          Int      @id @default(autoincrement())
+  name        String   // e.g., Color, Size
+  created_at  DateTime @default(now())
+
+  options     VariationOption[]
+
+  @@map("variations")
+}
+
+model VariationOption {
+  id           Int      @id @default(autoincrement())
+  variation_id Int
+  name         String   // e.g., Red, Blue, Small, Large
+  
+  variation    Variation @relation(fields: [variation_id], references: [id], onDelete: Cascade)
+  item_vars    ItemVariation[]
+
+  @@map("variation_options")
+}
+
+model Item {
+  id                      Int      @id @default(autoincrement())
+  type                    String?  @default("single") // single, variable, combo
+  code                    String?  @unique
+  sku                     String?  @unique
+  barcode_type            String?  @default("C128")
+  name                    String
+  description             String?
+  category_id             Int?
+  department_id           Int?
+  brand_id                Int?
+  unit_id                 Int?
+  warranty_id             Int?
+  
+  manage_stock            Boolean? @default(false)
+  alert_quantity          Float?   @default(0)
+  current_stock           Float?   @default(0)
+  
+  price_level_1           Float?
+  price_level_2           Float?
+  price_level_3           Float?
+  price_level_4           Float?
+  price_level_5           Float?
+  
+  tax_percentage          Float? @default(0)
+  service_percentage      Float? @default(0)
+  
+  is_require_printing     Boolean? @default(true)
+  printer_location        String?
+  
+  is_show_kitchen_monitor Boolean? @default(true)
+  
+  is_active               Boolean? @default(true)
+  created_at              DateTime @default(now())
+  updated_at              DateTime @default(now())
+
+  category                Category?   @relation(fields: [category_id], references: [id])
+  department              Department? @relation(fields: [department_id], references: [id])
+  brand                   Brand?      @relation(fields: [brand_id], references: [id])
+  unit                    Unit?       @relation(fields: [unit_id], references: [id])
+  warranty                Warranty?   @relation(fields: [warranty_id], references: [id])
+  
+  order_items             OrderItem[]
+  variations              ItemVariation[]
+
+  @@map("items")
+}
+
+model ItemVariation {
+  id                  Int      @id @default(autoincrement())
+  item_id             Int
+  variation_option_id Int
+  sku                 String?  @unique
+  sell_price_inc_tax  Float?
+  stock               Float?   @default(0)
+
+  item                Item            @relation(fields: [item_id], references: [id], onDelete: Cascade)
+  variation_option    VariationOption @relation(fields: [variation_option_id], references: [id], onDelete: Cascade)
+  
+  order_items         OrderItem[]
+
+  @@map("item_variations")
+}
+
+model TableZone {
+  id          Int      @id @default(autoincrement())
+  name        String?
+  description String?
+  created_at  DateTime @default(now())
+
+  tables      Table[]
+
+  @@map("table_zones")
+}
+
+model Table {
+  id           Int      @id @default(autoincrement())
+  table_number String
+  zone_id      Int?
+  capacity     Int?     @default(4)
+  status       String?  @default("available")
+  is_active    Boolean? @default(true)
+  created_at   DateTime @default(now())
+  updated_at   DateTime @default(now())
+
+  zone         TableZone? @relation(fields: [zone_id], references: [id])
+  orders       Order[]
+
+  @@map("tables")
+}
+
+model Order {
+  id              Int      @id @default(autoincrement())
+  order_number    String   @unique
+  table_id        Int?
+  customer_id     Int?
+  customer_name   String?
+  pax             Int?     @default(1)
+  order_type      String?
+  status          String?  @default("pending")
+  
+  total_items     Int?     @default(0)
+  subtotal        Float?   @default(0)
+  tax_amount      Float?   @default(0)
+  service_amount  Float?   @default(0)
+  discount_amount Float?   @default(0)
+  grand_total     Float?   @default(0)
+  
+  notes           String?
+  created_by      String?
+  created_at      DateTime @default(now())
+  updated_at      DateTime @default(now())
+  closed_at       DateTime?
+
+  table           Table?      @relation(fields: [table_id], references: [id])
+  customer        Customer?   @relation(fields: [customer_id], references: [id])
+  creator         User?       @relation(fields: [created_by], references: [id])
+  order_items     OrderItem[]
+  payments        Payment[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id                   Int       @id @default(autoincrement())
+  order_id             Int?
+  item_id              Int?
+  item_variation_id    Int?
+  quantity             Int       @default(1)
+  unit_price           Float?
+  price_level          Int?      @default(1)
+  special_instructions String?
+  status               String?   @default("pending")
+  discount_amount      Float?    @default(0)
+  
+  subtotal             Float?
+  tax_amount           Float?
+  service_amount       Float?
+  total                Float?
+  
+  sent_to_kitchen      Boolean?  @default(false)
+  sent_to_bar          Boolean?  @default(false)
+  sent_at              DateTime?
+  ready_at             DateTime?
+  
+  created_at           DateTime  @default(now())
+  updated_at           DateTime  @default(now())
+
+  order                Order?         @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  item                 Item?          @relation(fields: [item_id], references: [id])
+  variation            ItemVariation? @relation(fields: [item_variation_id], references: [id])
+
+  @@map("order_items")
+}
+
+model PaymentMethod {
+  id                 Int      @id @default(autoincrement())
+  name               String   @unique
+  description        String?
+  requires_reference Boolean? @default(false)
+  is_active          Boolean? @default(true)
+  created_at         DateTime @default(now())
+
+  payments           Payment[]
+
+  @@map("payment_methods")
+}
+
+model Payment {
+  id                Int      @id @default(autoincrement())
+  order_id          Int?
+  payment_method_id Int?
+  amount            Float?
+  reference_number  String?
+  status            String?  @default("completed")
+  notes             String?
+  
+  processed_by      String?
+  created_at        DateTime @default(now())
+
+  order             Order?         @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  method            PaymentMethod? @relation(fields: [payment_method_id], references: [id])
+  processor         User?          @relation(fields: [processed_by], references: [id])
+
+  @@map("payments")
+}
+
+model PrinterSetting {
+  id             Int      @id @default(autoincrement())
+  name           String?
+  location       String?
+  printer_type   String?
+  ip_address     String?
+  port           Int?
+  paper_width    Int?     @default(80)
+  is_active      Boolean? @default(true)
+  created_at     DateTime @default(now())
+  updated_at     DateTime @default(now())
+
+  @@map("printer_settings")
+}
+
+model KitchenMonitor {
+  id         Int      @id @default(autoincrement())
+  name       String?
+  location   String?
+  device_id  String?
+  status     String?  @default("active")
+  created_at DateTime @default(now())
+
+  @@map("kitchen_monitors")
+}
+
+model AuditLog {
+  id          Int      @id @default(autoincrement())
+  user_id     String?
+  action      String?
+  entity_type String?
+  entity_id   Int?
+  details     String?  // SQLite doesn't have JsonB, use String to store serialized JSON
+  ip_address  String?
+  created_at  DateTime @default(now())
+
+  user        User?    @relation(fields: [user_id], references: [id])
+
+  @@map("audit_logs")
+}
+
+model ExpenseCategory {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  created_at  DateTime  @default(now())
+
+  expenses    Expense[]
+
+  @@map("expense_categories")
+}
+
+model Expense {
+  id                  Int              @id @default(autoincrement())
+  expense_category_id Int?
+  amount              Float
+  description         String?
+  reference_number    String?
+  expense_date        DateTime         @default(now())
+  created_by          String?
+  created_at          DateTime         @default(now())
+  updated_at          DateTime         @default(now())
+
+  category            ExpenseCategory? @relation(fields: [expense_category_id], references: [id])
+  creator             User?            @relation(fields: [created_by], references: [id])
+
+  @@map("expenses")
+}
