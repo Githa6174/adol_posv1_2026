@@ -3,10 +3,24 @@ import { unitController } from '../controllers/unitController';
 import { brandController } from '../controllers/brandController';
 import { warrantyController } from '../controllers/warrantyController';
 import { variationController } from '../controllers/variationController';
+import { categoryController } from '../controllers/categoryController';
+import { departmentController } from '../controllers/departmentController';
 import { requireAuth } from '../middleware/auth.middleware';
 
 const router = Router();
 router.use(requireAuth);
+
+// Categories
+router.get('/categories', categoryController.getCategories);
+router.post('/categories', categoryController.createCategory);
+router.put('/categories/:id', categoryController.updateCategory);
+router.delete('/categories/:id', categoryController.deleteCategory);
+
+// Departments
+router.get('/departments', departmentController.getDepartments);
+router.post('/departments', departmentController.createDepartment);
+router.put('/departments/:id', departmentController.updateDepartment);
+router.delete('/departments/:id', departmentController.deleteDepartment);
 
 // Units
 router.get('/units', unitController.getUnits);
