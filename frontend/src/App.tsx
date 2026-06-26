@@ -16,6 +16,7 @@ import { Variations } from './pages/products/Variations';
 import { Categories } from './pages/products/Categories';
 import { Departments } from './pages/products/Departments';
 import { EditProduct } from './pages/products/EditProduct';
+import { PrinterSettings } from './pages/PrinterSettings';
 import { useAuthStore } from './stores/authStore';
 import { ToastContainer } from './components/Common/ToastContainer';
 
@@ -178,6 +179,14 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                 <span className="material-icons text-xl">account_balance_wallet</span>
                 {!isCollapsed && <span className="whitespace-nowrap">Pengeluaran</span>}
               </Link>
+              <Link 
+                to="/printers" 
+                className={`flex items-center rounded-xl transition-all py-3 ${location.pathname === '/printers' ? 'bg-brand-highlight text-brand-600 dark:text-brand-300 border border-brand-highlight font-bold' : 'border border-transparent text-text-muted hover:bg-surface-dark hover:text-text-main font-medium'} ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-4'}`}
+                title={isCollapsed ? "Printer Settings" : ""}
+              >
+                <span className="material-icons text-xl">print</span>
+                {!isCollapsed && <span className="whitespace-nowrap">Printer Settings</span>}
+              </Link>
             </>
           )}
         </nav>
@@ -284,6 +293,7 @@ function App() {
         <Route path="/products/list" element={<ProtectedRoute><DashboardLayout><ListProducts /></DashboardLayout></ProtectedRoute>} />
         <Route path="/products/add" element={<ProtectedRoute><DashboardLayout><AddProduct /></DashboardLayout></ProtectedRoute>} />
         <Route path="/products/edit/:id" element={<ProtectedRoute><DashboardLayout><EditProduct /></DashboardLayout></ProtectedRoute>} />
+        <Route path="/printers" element={<ProtectedRoute><DashboardLayout><PrinterSettings /></DashboardLayout></ProtectedRoute>} />
         <Route path="/items" element={<Navigate to="/products/list" replace />} />
         <Route 
           path="/expenses" 

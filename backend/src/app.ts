@@ -12,6 +12,7 @@ import { expenseRouter } from './routes/expenses.routes';
 import { usersRouter } from './routes/users.routes';
 import { customersRouter } from './routes/customers.routes';
 import { productsSettingsRouter } from './routes/productsSettings.routes';
+import { printerRouter } from './routes/printers.routes';
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -30,6 +31,7 @@ app.use('/api/expenses', expenseRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/customers', customersRouter);
 app.use('/api/product-settings', productsSettingsRouter);
+app.use('/api/printers', printerRouter);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
