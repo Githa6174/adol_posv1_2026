@@ -25,6 +25,14 @@ export class ItemService {
     return prisma.department.create({ data });
   }
 
+  async updateDepartment(id: number, data: { name: string; description?: string }) {
+    return prisma.department.update({ where: { id }, data });
+  }
+
+  async deleteDepartment(id: number) {
+    return prisma.department.delete({ where: { id } });
+  }
+
   async getItems() {
     return prisma.item.findMany({
       include: {

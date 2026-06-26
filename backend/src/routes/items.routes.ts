@@ -14,6 +14,8 @@ itemsRouter.delete('/categories/:id', itemController.deleteCategory);
 
 itemsRouter.get('/departments', itemController.getDepartments);
 itemsRouter.post('/departments', itemController.createDepartment);
+itemsRouter.put('/departments/:id', itemController.updateDepartment);
+itemsRouter.delete('/departments/:id', itemController.deleteDepartment);
 
 itemsRouter.get('/', itemController.getItems);
 itemsRouter.get('/:id', itemController.getItemById);

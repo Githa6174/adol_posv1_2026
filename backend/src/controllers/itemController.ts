@@ -34,6 +34,16 @@ export class ItemController {
     res.json(department);
   }
 
+  updateDepartment = async (req: Request, res: Response) => {
+    const department = await itemService.updateDepartment(Number(req.params.id), req.body);
+    res.json(department);
+  }
+
+  deleteDepartment = async (req: Request, res: Response) => {
+    await itemService.deleteDepartment(Number(req.params.id));
+    res.json({ message: 'Department deleted' });
+  }
+
   getItems = async (req: Request, res: Response) => {
     const items = await itemService.getItems();
     res.json(items);
