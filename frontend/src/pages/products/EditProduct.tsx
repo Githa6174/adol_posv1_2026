@@ -16,6 +16,7 @@ export function EditProduct() {
   const [units, setUnits] = useState<any[]>([]);
   const [warranties, setWarranties] = useState<any[]>([]);
   const [variationTemplates, setVariationTemplates] = useState<any[]>([]);
+  const [printers, setPrinters] = useState<any[]>([]);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -53,13 +54,14 @@ export function EditProduct() {
     const fetchData = async () => {
       try {
         const headers = { Authorization: `Bearer ${token}` };
-        const [catRes, deptRes, brandRes, unitRes, warrantyRes, varRes, itemRes] = await Promise.all([
+        const [catRes, deptRes, brandRes, unitRes, warrantyRes, varRes, printerRes, itemRes] = await Promise.all([
           fetch(`${API_URL}/items/categories`, { headers }),
           fetch(`${API_URL}/items/departments`, { headers }),
           fetch(`${API_URL}/product-settings/brands`, { headers }),
           fetch(`${API_URL}/product-settings/units`, { headers }),
           fetch(`${API_URL}/product-settings/warranties`, { headers }),
           fetch(`${API_URL}/product-settings/variations`, { headers }),
+          fetch(`${API_URL}/printers`, { headers }),
           fetch(`${API_URL}/items/${id}`, { headers })
         ]);
 
@@ -69,6 +71,7 @@ export function EditProduct() {
         if (unitRes.ok) setUnits(await unitRes.json());
         if (warrantyRes.ok) setWarranties(await warrantyRes.json());
         if (varRes.ok) setVariationTemplates(await varRes.json());
+        if (printerRes.ok) setPrinters((await printerRes.json()).filter((p: any) => p.is_active));
 
         if (itemRes.ok) {
           const itemData = await itemRes.json();
@@ -424,10 +427,8 @@ export function EditProduct() {
               <div>
                 <label className="block text-sm font-medium text-text-muted mb-2">Lokasi / Kategori Printer</label>
                 <select value={formData.printer_location} onChange={e => setFormData({...formData, printer_location: e.target.value})} className="input-field w-full">
-                  <option value="" className="bg-surface text-text-main">Pilih Lokasi Printer...</option>
-                  <option value="Kitchen" className="bg-surface text-text-main">Dapur / Kitchen</option>
-                  <option value="Bar" className="bg-surface text-text-main">Bar / Minuman</option>
-                  <option value="Cashier" className="bg-surface text-text-main">Kasir Utama</option>
+                  <option value="" className="bg-surface text-text-main">Pilih Printer...</option>
+                  {printers.map(p => <option key={p.id} value={p.location || p.name} className="bg-surface text-text-main">{p.name} ({p.location})</option>)}
                 </select>
               </div>
             </div>

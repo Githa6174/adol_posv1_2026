@@ -72,7 +72,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex h-screen bg-background text-text-main overflow-hidden">
       {/* Sidebar - Solid Clean */}
-      <div className={`bg-surface flex flex-col z-20 border-r border-border relative no-print shadow-sm transition-all duration-300 ${isCollapsed ? 'w-20' : 'w-[280px]'}`}>
+      <div className={`bg-surface flex flex-col z-20 border-r border-border relative no-print shadow-sm transition-all duration-300 overflow-hidden ${isCollapsed ? 'w-20' : 'w-[280px]'}`}>
         <div className={`border-b border-border flex transition-all duration-300 ${isCollapsed ? 'p-4 flex-col gap-3 items-center' : 'p-6 items-center justify-between'}`}>
           <h1 className="text-2xl font-extrabold tracking-tight text-brand-600 flex items-center gap-2">
             <span className="material-icons text-brand-500">point_of_sale</span>
