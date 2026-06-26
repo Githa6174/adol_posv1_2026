@@ -8,12 +8,16 @@ export class AuthService {
       where: { username }
     });
     
-    if (!user || !await bcrypt.compare(password, user.password)) {
-      throw new Error('Invalid credentials');
+    if (!user) {
+      throw new Error('Username tidak ditemukan');
+    }
+
+    if (!await bcrypt.compare(password, user.password)) {
+      throw new Error('Password yang Anda masukkan salah');
     }
 
     if (!user.is_active) {
-      throw new Error('User is inactive');
+      throw new Error('Akun Anda tidak aktif, hubungi admin');
     }
 
     const token = jwt.sign(
