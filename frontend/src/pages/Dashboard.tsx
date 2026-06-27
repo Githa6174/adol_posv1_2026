@@ -15,30 +15,45 @@ export function Dashboard() {
   
   const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
   const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchDashboard = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const query = new URLSearchParams({ startDate, endDate }).toString();
+      const response = await fetch(`${API_URL}/reports/dashboard?${query}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (!response.ok) {
+        const errBody = await response.json().catch(() => ({}));
+        throw new Error(errBody.error || errBody.message || `Server error ${response.status}`);
+      }
+      const result = await response.json();
+      setData(result);
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'Terjadi kesalahan');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchDashboard = async () => {
-      try {
-        setLoading(true);
-        const query = new URLSearchParams({ startDate, endDate }).toString();
-        const response = await fetch(`${API_URL}/reports/dashboard?${query}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        if (!response.ok) throw new Error('Failed to fetch report');
-        const result = await response.json();
-        setData(result);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchDashboard();
   }, [token, startDate, endDate]);
 
   if (loading && !data) return <div className="p-8 text-center">Memuat Data Analitik...</div>;
+  if (error && !data) return (
+    <div className="p-8 text-center">
+      <p className="text-red-500 mb-4">{error}</p>
+      <button onClick={fetchDashboard} className="px-4 py-2 bg-brand-600 text-white rounded-lg">
+        Coba Lagi
+      </button>
+    </div>
+  );
   if (!data) return <div className="p-8 text-center text-red-500">Gagal memuat data.</div>;
 
   return (
