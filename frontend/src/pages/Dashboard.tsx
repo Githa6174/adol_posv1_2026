@@ -58,7 +58,7 @@ export function Dashboard() {
 
   return (
     <div className="p-8 overflow-y-auto h-full pb-20">
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-extrabold text-brand-600">
             Ringkasan Penjualan
@@ -66,26 +66,95 @@ export function Dashboard() {
           <p className="text-text-muted mt-1">Pantau performa bisnis Anda secara real-time</p>
         </div>
         
-        <div className="flex items-center gap-2 bg-surface-dark border border-border rounded-xl p-2">
-          <Calendar size={18} className="text-text-muted ml-2" />
-          <input 
-            type="date" 
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className="bg-transparent text-text-main text-sm focus:outline-none px-2"
-          />
-          <span className="text-text-muted">-</span>
-          <input 
-            type="date" 
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            className="bg-transparent text-text-main text-sm focus:outline-none px-2"
-          />
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex bg-surface-dark border border-border rounded-xl p-1 gap-1">
+            <button
+              onClick={() => {
+                const todayStr = new Date().toISOString().split('T')[0];
+                setStartDate(todayStr);
+                setEndDate(todayStr);
+              }}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                startDate === endDate && startDate === new Date().toISOString().split('T')[0]
+                  ? 'bg-brand-600 text-white shadow-md shadow-brand-500/20'
+                  : 'text-text-muted hover:text-text-main hover:bg-surface-light'
+              }`}
+            >
+              Hari Ini
+            </button>
+            <button
+              onClick={() => {
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                const yestStr = yesterday.toISOString().split('T')[0];
+                setStartDate(yestStr);
+                setEndDate(yestStr);
+              }}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                startDate === endDate && startDate === new Date(Date.now() - 86400000).toISOString().split('T')[0]
+                  ? 'bg-brand-600 text-white shadow-md shadow-brand-500/20'
+                  : 'text-text-muted hover:text-text-main hover:bg-surface-light'
+              }`}
+            >
+              Kemarin
+            </button>
+            <button
+              onClick={() => {
+                const sevenDaysAgo = new Date();
+                sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+                const startStr = sevenDaysAgo.toISOString().split('T')[0];
+                const endStr = new Date().toISOString().split('T')[0];
+                setStartDate(startStr);
+                setEndDate(endStr);
+              }}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                startDate === new Date(Date.now() - 6 * 86400000).toISOString().split('T')[0] && endDate === new Date().toISOString().split('T')[0]
+                  ? 'bg-brand-600 text-white shadow-md shadow-brand-500/20'
+                  : 'text-text-muted hover:text-text-main hover:bg-surface-light'
+              }`}
+            >
+              7 Hari
+            </button>
+            <button
+              onClick={() => {
+                const startOfMonth = new Date();
+                startOfMonth.setDate(1);
+                const startStr = startOfMonth.toISOString().split('T')[0];
+                const endStr = new Date().toISOString().split('T')[0];
+                setStartDate(startStr);
+                setEndDate(endStr);
+              }}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                startDate === new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0] && endDate === new Date().toISOString().split('T')[0]
+                  ? 'bg-brand-600 text-white shadow-md shadow-brand-500/20'
+                  : 'text-text-muted hover:text-text-main hover:bg-surface-light'
+              }`}
+            >
+              Bulan Ini
+            </button>
+          </div>
+
+          <div className="flex items-center gap-2 bg-surface-dark border border-border rounded-xl p-2 shadow-sm">
+            <Calendar size={16} className="text-text-muted ml-1" />
+            <input 
+              type="date" 
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="bg-transparent text-text-main text-xs focus:outline-none px-1"
+            />
+            <span className="text-text-muted text-xs">-</span>
+            <input 
+              type="date" 
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="bg-transparent text-text-main text-xs focus:outline-none px-1"
+            />
+          </div>
         </div>
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
         <div className="glass-card p-6">
           <div className="flex justify-between items-start">
             <div>
