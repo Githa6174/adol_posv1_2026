@@ -5,6 +5,7 @@ import { warrantyController } from '../controllers/warrantyController';
 import { variationController } from '../controllers/variationController';
 import { categoryController } from '../controllers/categoryController';
 import { departmentController } from '../controllers/departmentController';
+import { modifierController } from '../controllers/modifierController';
 import { requireAuth } from '../middleware/auth.middleware';
 
 const router = Router();
@@ -45,5 +46,10 @@ router.get('/variations', variationController.getVariations);
 router.post('/variations', variationController.createVariation);
 router.put('/variations/:id', variationController.updateVariation);
 router.delete('/variations/:id', variationController.deleteVariation);
+
+router.get('/modifiers', modifierController.getModifierGroups);
+router.post('/modifiers', modifierController.createModifierGroup);
+router.put('/modifiers/:id', modifierController.updateModifierGroup);
+router.delete('/modifiers/:id', modifierController.deleteModifierGroup);
 
 export const productsSettingsRouter = router;

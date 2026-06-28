@@ -392,7 +392,7 @@ export function TableMap() {
                 {/* Customer Section */}
                 <div className="mt-3 relative">
                   {selectedCustomer ? (
-                    <div className="flex items-center gap-2 bg-orange-500/10 border border-orange-500/20 px-3 py-2 rounded-lg inline-flex">
+                    <div className="items-center gap-2 bg-orange-500/10 border border-orange-500/20 px-3 py-2 rounded-lg inline-flex">
                       <span className="material-icons text-base text-orange-600 dark:text-orange-400">loyalty</span>
                       <span className="text-orange-600 dark:text-orange-300 font-bold text-sm">{selectedCustomer.name}</span>
                       <span className="text-orange-500 dark:text-orange-400/50 text-xs">({selectedCustomer.points} Pts)</span>
@@ -606,6 +606,11 @@ export function TableMap() {
                 <td className="pr-2">{oi.quantity}x</td>
                 <td className="pr-2 w-full">
                   <div>{oi.item.name}</div>
+                  {oi.modifiers?.filter((m: any) => m.print_on_receipt).map((m: any, mIdx: number) => (
+                    <div key={mIdx} className="text-[10px] text-gray-600 pl-2">
+                      + {m.name} {m.price > 0 && `(Rp ${m.price.toLocaleString('id-ID')})`}
+                    </div>
+                  ))}
                   {oi.discount_amount > 0 && (
                     <div className="text-[10px] italic">- Disc: Rp {oi.discount_amount.toLocaleString('id-ID')}</div>
                   )}

@@ -16,6 +16,8 @@ export function AddProduct() {
   const [warranties, setWarranties] = useState<any[]>([]);
   const [variationTemplates, setVariationTemplates] = useState<any[]>([]);
   const [printers, setPrinters] = useState<any[]>([]);
+  const [modifierGroups, setModifierGroups] = useState<any[]>([]);
+  const [selectedModifierGroupIds, setSelectedModifierGroupIds] = useState<number[]>([]);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -53,14 +55,15 @@ export function AddProduct() {
     const fetchData = async () => {
       try {
         const headers = { Authorization: `Bearer ${token}` };
-        const [catRes, deptRes, brandRes, unitRes, warrantyRes, varRes, printerRes] = await Promise.all([
+        const [catRes, deptRes, brandRes, unitRes, warrantyRes, varRes, printerRes, modRes] = await Promise.all([
           fetch(`${API_URL}/items/categories`, { headers }),
           fetch(`${API_URL}/items/departments`, { headers }),
           fetch(`${API_URL}/product-settings/brands`, { headers }),
           fetch(`${API_URL}/product-settings/units`, { headers }),
           fetch(`${API_URL}/product-settings/warranties`, { headers }),
           fetch(`${API_URL}/product-settings/variations`, { headers }),
-          fetch(`${API_URL}/printers`, { headers })
+          fetch(`${API_URL}/printers`, { headers }),
+          fetch(`${API_URL}/product-settings/modifiers`, { headers })
         ]);
 
         if (catRes.ok) setCategories(await catRes.json());
@@ -70,6 +73,7 @@ export function AddProduct() {
         if (warrantyRes.ok) setWarranties(await warrantyRes.json());
         if (varRes.ok) setVariationTemplates(await varRes.json());
         if (printerRes.ok) setPrinters((await printerRes.json()).filter((p: any) => p.is_active));
+        if (modRes.ok) setModifierGroups(await modRes.json());
       } catch (err) {
         console.error('Failed to load references', err);
       }
@@ -105,7 +109,8 @@ export function AddProduct() {
       unit_id: formData.unit_id ? Number(formData.unit_id) : null,
       warranty_id: formData.warranty_id ? Number(formData.warranty_id) : null,
       image: hasImage ? formData.image : null,
-      variations: formData.type === 'variable' ? generatedVariations : []
+      variations: formData.type === 'variable' ? generatedVariations : [],
+      modifier_group_ids: selectedModifierGroupIds
     };
 
     try {
@@ -386,6 +391,76 @@ export function AddProduct() {
                 </select>
               </div>
             </div>
+          </div>
+
+          {/* Section: Modifiers */}
+          <div className="glass rounded-3xl p-8 border border-border">
+            <h2 className="text-2xl font-bold text-text-main mb-6 border-b border-border pb-4">Modifiers</h2>
+            {modifierGroups.length === 0 ? (
+              <p className="text-text-muted text-sm">Belum ada modifier group. Buat di menu Products {'>'} Modifiers.</p>
+            ) : (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-text-muted mb-2">Pilih Modifier Group</label>
+                  <select
+                    value=""
+                    onChange={e => {
+                      const val = Number(e.target.value);
+                      if (val && !selectedModifierGroupIds.includes(val)) {
+                        setSelectedModifierGroupIds([...selectedModifierGroupIds, val]);
+                      }
+                    }}
+                    className="input-field w-full"
+                  >
+                    <option value="" className="bg-surface text-text-main">Pilih Modifier Group untuk ditambahkan...</option>
+                    {modifierGroups
+                      .filter((g: any) => !selectedModifierGroupIds.includes(g.id))
+                      .map((g: any) => (
+                        <option key={g.id} value={g.id} className="bg-surface text-text-main">
+                          {g.name} {g.is_required ? '(Wajib)' : ''}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+
+                {selectedModifierGroupIds.length > 0 && (
+                  <div className="space-y-2 mt-4">
+                    <label className="block text-sm font-medium text-text-muted">Modifier Group Terpilih</label>
+                    <div className="flex flex-col gap-2">
+                      {selectedModifierGroupIds.map(id => {
+                        const g = modifierGroups.find(x => x.id === id);
+                        if (!g) return null;
+                        return (
+                          <div key={g.id} className="flex items-center justify-between p-4 rounded-xl border border-brand-500 bg-brand-500/5">
+                            <div>
+                              <div className="font-bold text-text-main text-sm flex items-center gap-2">
+                                {g.name}
+                                {g.is_required && <span className="text-[10px] bg-red-50 text-red-600 border border-red-200 px-1.5 py-0.5 rounded font-bold">WAJIB</span>}
+                                {g.print_on_receipt && <span className="material-icons text-text-muted text-sm">print</span>}
+                              </div>
+                              <div className="flex gap-1.5 mt-2 flex-wrap">
+                                {g.options?.map((opt: any) => (
+                                  <span key={opt.id} className="bg-surface-dark border border-border px-2 py-0.5 rounded text-[11px] text-text-muted">
+                                    {opt.name} {opt.price > 0 && <span className="text-brand-500">+Rp {opt.price.toLocaleString('id-ID')}</span>}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setSelectedModifierGroupIds(selectedModifierGroupIds.filter(xid => xid !== g.id))}
+                              className="text-red-500 hover:text-red-400 p-2 font-bold transition-colors"
+                            >
+                              Hapus
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Section 6: Inventory Stock Control (If Single) */}

@@ -9,7 +9,12 @@ export class PaymentService {
     return prisma.order.findFirst({
       where: { table_id: tableId, status: 'pending' },
       include: { 
-        order_items: { include: { item: true } },
+        order_items: { 
+          include: { 
+            item: true,
+            modifiers: true
+          } 
+        },
         payments: true
       },
       orderBy: { created_at: 'desc' }

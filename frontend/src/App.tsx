@@ -13,6 +13,7 @@ import { Units } from './pages/products/Units';
 import { Brands } from './pages/products/Brands';
 import { Warranties } from './pages/products/Warranties';
 import { Variations } from './pages/products/Variations';
+import { Modifiers } from './pages/products/Modifiers';
 import { Categories } from './pages/products/Categories';
 import { Departments } from './pages/products/Departments';
 import { EditProduct } from './pages/products/EditProduct';
@@ -165,6 +166,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                     <Link to="/products/categories" className={`block py-2 px-3 rounded-lg text-sm hover:bg-surface-light transition-colors ${location.pathname === '/products/categories' ? 'bg-surface-light text-brand-600 dark:text-brand-400 font-bold' : 'text-text-muted hover:text-text-main'}`}>Categories</Link>
                     <Link to="/products/departments" className={`block py-2 px-3 rounded-lg text-sm hover:bg-surface-light transition-colors ${location.pathname === '/products/departments' ? 'bg-surface-light text-brand-600 dark:text-brand-400 font-bold' : 'text-text-muted hover:text-text-main'}`}>Departments</Link>
                     <Link to="/products/variations" className={`block py-2 px-3 rounded-lg text-sm hover:bg-surface-light transition-colors ${location.pathname === '/products/variations' ? 'bg-surface-light text-brand-600 dark:text-brand-400 font-bold' : 'text-text-muted hover:text-text-main'}`}>Variations</Link>
+                    <Link to="/products/modifiers" className={`block py-2 px-3 rounded-lg text-sm hover:bg-surface-light transition-colors ${location.pathname === '/products/modifiers' ? 'bg-surface-light text-brand-600 dark:text-brand-400 font-bold' : 'text-text-muted hover:text-text-main'}`}>Modifiers</Link>
                     <Link to="/products/units" className={`block py-2 px-3 rounded-lg text-sm hover:bg-surface-light transition-colors ${location.pathname === '/products/units' ? 'bg-surface-light text-brand-600 dark:text-brand-400 font-bold' : 'text-text-muted hover:text-text-main'}`}>Units</Link>
                     <Link to="/products/brands" className={`block py-2 px-3 rounded-lg text-sm hover:bg-surface-light transition-colors ${location.pathname === '/products/brands' ? 'bg-surface-light text-brand-600 dark:text-brand-400 font-bold' : 'text-text-muted hover:text-text-main'}`}>Brands</Link>
                     <Link to="/products/warranties" className={`block py-2 px-3 rounded-lg text-sm hover:bg-surface-light transition-colors ${location.pathname === '/products/warranties' ? 'bg-surface-light text-brand-600 dark:text-brand-400 font-bold' : 'text-text-muted hover:text-text-main'}`}>Warranties</Link>
@@ -290,6 +292,7 @@ function App() {
         <Route path="/products/brands" element={<ProtectedRoute><DashboardLayout><Brands /></DashboardLayout></ProtectedRoute>} />
         <Route path="/products/warranties" element={<ProtectedRoute><DashboardLayout><Warranties /></DashboardLayout></ProtectedRoute>} />
         <Route path="/products/variations" element={<ProtectedRoute><DashboardLayout><Variations /></DashboardLayout></ProtectedRoute>} />
+        <Route path="/products/modifiers" element={<ProtectedRoute><DashboardLayout><Modifiers /></DashboardLayout></ProtectedRoute>} />
         <Route path="/products/list" element={<ProtectedRoute><DashboardLayout><ListProducts /></DashboardLayout></ProtectedRoute>} />
         <Route path="/products/add" element={<ProtectedRoute><DashboardLayout><AddProduct /></DashboardLayout></ProtectedRoute>} />
         <Route path="/products/edit/:id" element={<ProtectedRoute><DashboardLayout><EditProduct /></DashboardLayout></ProtectedRoute>} />

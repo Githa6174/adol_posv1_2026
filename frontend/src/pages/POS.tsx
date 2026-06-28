@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom';
 import { itemService } from '../services/itemService';
 import { orderService } from '../services/orderService';
 import { tableService } from '../services/tableService';
-import { useOrderStore } from '../stores/orderStore';
+import { useOrderStore, type SelectedModifier } from '../stores/orderStore';
 import { useToastStore } from '../stores/toastStore';
 
 export function POS() {
@@ -32,6 +32,7 @@ export function POS() {
   const [configNotes, setConfigNotes] = useState('');
   const [configDiscountAmount, setConfigDiscountAmount] = useState(0);
   const [configDiscountType, setConfigDiscountType] = useState<'nominal' | 'percentage'>('nominal');
+  const [configSelectedModifiers, setConfigSelectedModifiers] = useState<SelectedModifier[]>([]);
 
   const navigate = useNavigate();
 
@@ -83,17 +84,65 @@ export function POS() {
     setConfigNotes('');
     setConfigDiscountAmount(0);
     setConfigDiscountType('nominal');
+    setConfigSelectedModifiers([]);
+  };
+
+  const getItemModifierGroups = (item: any) => {
+    if (!item?.modifier_groups || item.modifier_groups.length === 0) return [];
+    return item.modifier_groups.map((mg: any) => mg.modifier_group).filter(Boolean);
+  };
+
+  const toggleModifier = (group: any, option: any) => {
+    const existing = configSelectedModifiers.find(m => m.modifier_option_id === option.id);
+    if (existing) {
+      setConfigSelectedModifiers(configSelectedModifiers.filter(m => m.modifier_option_id !== option.id));
+      return;
+    }
+
+    if (!group.allow_multiple) {
+      const withoutGroup = configSelectedModifiers.filter(m => m.group_name !== group.name);
+      setConfigSelectedModifiers([...withoutGroup, {
+        modifier_option_id: option.id,
+        name: option.name,
+        price: option.price || 0,
+        print_on_receipt: group.print_on_receipt,
+        group_name: group.name
+      }]);
+      return;
+    }
+
+    const groupSelections = configSelectedModifiers.filter(m => m.group_name === group.name);
+    if (groupSelections.length >= group.max_select) return;
+
+    setConfigSelectedModifiers([...configSelectedModifiers, {
+      modifier_option_id: option.id,
+      name: option.name,
+      price: option.price || 0,
+      print_on_receipt: group.print_on_receipt,
+      group_name: group.name
+    }]);
   };
 
   const confirmAddItem = () => {
     if (!selectedConfigItem) return;
+    const modGroups = getItemModifierGroups(selectedConfigItem);
+    for (const g of modGroups) {
+      if (g.is_required) {
+        const hasSelection = configSelectedModifiers.some(m => m.group_name === g.name);
+        if (!hasSelection) {
+          showToast(`Modifier "${g.name}" wajib dipilih`, 'error');
+          return;
+        }
+      }
+    }
     addItem({
       item: selectedConfigItem,
       quantity: configQty,
       priceLevel: configPriceLevel,
       specialInstructions: configNotes,
       discountAmount: configDiscountAmount,
-      discountType: configDiscountType
+      discountType: configDiscountType,
+      selectedModifiers: configSelectedModifiers
     });
     setSelectedConfigItem(null);
   };
@@ -129,14 +178,21 @@ export function POS() {
         pax: selectedTable?.pax || 1,
         items: items.map(i => {
           const basePrice = i.item[`price_level_${i.priceLevel}`] || i.item.price_level_1;
-          const discount = i.discountType === 'percentage' ? (basePrice * i.discountAmount) / 100 : i.discountAmount;
+          const modifierTotal = i.selectedModifiers.reduce((s, m) => s + m.price, 0);
+          const discount = i.discountType === 'percentage' ? ((basePrice + modifierTotal) * i.discountAmount) / 100 : i.discountAmount;
           return {
             item_id: i.item.id,
             quantity: i.quantity,
             unit_price: basePrice,
             price_level: i.priceLevel,
             discount_amount: discount,
-            special_instructions: i.specialInstructions
+            special_instructions: i.specialInstructions,
+            modifiers: i.selectedModifiers.map(m => ({
+              modifier_option_id: m.modifier_option_id,
+              name: m.name,
+              price: m.price,
+              print_on_receipt: m.print_on_receipt
+            }))
           };
         }),
         updated_items: modifiedExisting.map(i => ({
@@ -300,6 +356,17 @@ export function POS() {
                         <span className="bg-surface-dark px-1.5 py-0.5 rounded border border-[var(--color-border)] font-semibold">{orderItem.quantity}x</span>
                         <span>@ Rp {orderItem.unit_price?.toLocaleString('id-ID')}</span>
                       </div>
+                      {orderItem.modifiers?.length > 0 && (
+                        <div className="mt-2 space-y-1">
+                          {orderItem.modifiers.map((mod: any, mIdx: number) => (
+                            <div key={mIdx} className="text-xs text-text-muted flex items-center gap-1">
+                              <span className="material-icons text-[10px]">add_circle</span>
+                              <span>{mod.name}</span>
+                              {mod.price > 0 && <span className="font-semibold">+Rp {mod.price.toLocaleString('id-ID')}</span>}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                       {orderItem.discount_amount > 0 && (
                         <div className="text-xs text-red-500 mt-1.5 font-medium flex items-center gap-1"><span className="material-icons text-[10px]">sell</span> Diskon: -Rp {orderItem.discount_amount.toLocaleString('id-ID')}</div>
                       )}
@@ -329,7 +396,8 @@ export function POS() {
               )}
               {items.map((orderItem, idx) => {
                 const basePrice = orderItem.item[`price_level_${orderItem.priceLevel}`] || orderItem.item.price_level_1;
-                const discount = orderItem.discountType === 'percentage' ? (basePrice * orderItem.discountAmount) / 100 : orderItem.discountAmount;
+                const modifierTotal = orderItem.selectedModifiers.reduce((s, m) => s + m.price, 0);
+                const discount = orderItem.discountType === 'percentage' ? ((basePrice + modifierTotal) * orderItem.discountAmount) / 100 : orderItem.discountAmount;
                 return (
                   <div key={idx} className="flex justify-between items-start bg-surface p-3 rounded-xl border border-[var(--color-border)] shadow-sm hover:border-brand-500 transition-colors group">
                     <div className="flex-1">
@@ -339,6 +407,17 @@ export function POS() {
                         <span>@ Rp {basePrice.toLocaleString('id-ID')}</span>
                         <span className="text-[10px] bg-surface-dark border border-[var(--color-border)] px-1 rounded">(Lvl {orderItem.priceLevel})</span>
                       </div>
+                      {orderItem.selectedModifiers.length > 0 && (
+                        <div className="mt-2 space-y-1">
+                          {orderItem.selectedModifiers.map((mod, mIdx) => (
+                            <div key={mIdx} className="text-xs text-brand-600 dark:text-brand-300 flex items-center gap-1">
+                              <span className="material-icons text-[10px]">add_circle</span>
+                              <span>{mod.name}</span>
+                              {mod.price > 0 && <span className="font-semibold">+Rp {mod.price.toLocaleString('id-ID')}</span>}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                       {discount > 0 && (
                         <div className="text-xs text-red-500 mt-1.5 font-medium">
                            <span className="material-icons text-[10px] align-middle mr-1">sell</span>{orderItem.discountType === 'percentage' ? `${orderItem.discountAmount}%` : `Rp ${orderItem.discountAmount.toLocaleString('id-ID')}`} (-Rp {discount.toLocaleString('id-ID')})
@@ -352,7 +431,7 @@ export function POS() {
                     </div>
                     <div className="flex flex-col items-end gap-3 justify-between h-full ml-3">
                       <div className="font-bold text-text-main text-sm">
-                        Rp {((basePrice - discount) * orderItem.quantity).toLocaleString('id-ID')}
+                        Rp {((basePrice + modifierTotal - discount) * orderItem.quantity).toLocaleString('id-ID')}
                       </div>
                       <button 
                         onClick={() => removeItem(orderItem.item.id)}
@@ -431,6 +510,45 @@ export function POS() {
                   <option value={5} className="bg-surface text-text-main">Level 5 - Rp {selectedConfigItem.price_level_5?.toLocaleString('id-ID')}</option>
                 </select>
               </div>
+
+              {getItemModifierGroups(selectedConfigItem).length > 0 && (
+                <div className="space-y-4">
+                  {getItemModifierGroups(selectedConfigItem).map((group: any) => (
+                    <div key={group.id} className="bg-surface-dark/40 p-5 rounded-2xl border border-border">
+                      <label className="text-text-muted font-medium mb-1 text-sm flex items-center gap-2">
+                        {group.name}
+                        {group.is_required && <span className="text-[10px] bg-red-50 text-red-600 border border-red-200 px-1.5 py-0.5 rounded font-bold">WAJIB</span>}
+                        {group.allow_multiple && <span className="text-[10px] bg-surface border border-border px-1.5 py-0.5 rounded text-text-muted">Max {group.max_select}</span>}
+                      </label>
+                      <div className="grid grid-cols-2 gap-2 mt-3">
+                        {group.options?.map((opt: any) => {
+                          const isSelected = configSelectedModifiers.some(m => m.modifier_option_id === opt.id);
+                          return (
+                            <button
+                              key={opt.id}
+                              type="button"
+                              onClick={() => toggleModifier(group, opt)}
+                              className={`p-3 rounded-xl border text-left transition-all text-sm ${
+                                isSelected 
+                                  ? 'border-brand-500 bg-brand-500/10 text-brand-600 dark:text-brand-300 font-bold' 
+                                  : 'border-border bg-background text-text-main hover:border-brand-300 hover:bg-brand-500/5'
+                              }`}
+                            >
+                              <div className="flex items-center gap-2">
+                                <span className="material-icons text-sm">{isSelected ? 'check_circle' : 'radio_button_unchecked'}</span>
+                                <span>{opt.name}</span>
+                              </div>
+                              {opt.price > 0 && (
+                                <div className="text-xs mt-1 text-brand-500 font-semibold ml-6">+Rp {opt.price.toLocaleString('id-ID')}</div>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
  
               <div className="bg-surface-dark/40 p-5 rounded-2xl border border-border">
                 <label className="block text-text-muted font-medium mb-3 text-sm">Diskon per Item (Opsional)</label>

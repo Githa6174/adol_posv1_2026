@@ -47,6 +47,13 @@ export class ItemService {
               include: { variation: true }
             }
           }
+        },
+        modifier_groups: {
+          include: {
+            modifier_group: {
+              include: { options: true }
+            }
+          }
         }
       }
     });
@@ -67,6 +74,13 @@ export class ItemService {
               include: { variation: true }
             }
           }
+        },
+        modifier_groups: {
+          include: {
+            modifier_group: {
+              include: { options: true }
+            }
+          }
         }
       }
     });
@@ -80,12 +94,10 @@ export class ItemService {
       data.sku = data.code;
     }
     
-    // Extract variations
-    const { variations, ...itemData } = data;
+    const { variations, modifier_group_ids, ...itemData } = data;
 
     const item = await prisma.item.create({ data: itemData });
 
-    // Handle variations if variable
     if (item.type === 'variable' && variations && variations.length > 0) {
       await prisma.itemVariation.createMany({
         data: variations.map((v: any) => ({
@@ -98,11 +110,20 @@ export class ItemService {
       });
     }
 
+    if (modifier_group_ids && modifier_group_ids.length > 0) {
+      await prisma.itemModifierGroup.createMany({
+        data: modifier_group_ids.map((gId: number) => ({
+          item_id: item.id,
+          modifier_group_id: gId
+        }))
+      });
+    }
+
     return item;
   }
 
   async updateItem(id: number, data: any) {
-    const { variations, ...itemData } = data;
+    const { variations, modifier_group_ids, ...itemData } = data;
     
     await prisma.item.update({
       where: { id },
@@ -110,7 +131,6 @@ export class ItemService {
     });
 
     if (variations) {
-      // Very basic approach: delete old, create new
       await prisma.itemVariation.deleteMany({ where: { item_id: id } });
       await prisma.itemVariation.createMany({
         data: variations.map((v: any) => ({
@@ -121,6 +141,18 @@ export class ItemService {
           stock: v.stock || 0
         }))
       });
+    }
+
+    if (modifier_group_ids !== undefined) {
+      await prisma.itemModifierGroup.deleteMany({ where: { item_id: id } });
+      if (modifier_group_ids.length > 0) {
+        await prisma.itemModifierGroup.createMany({
+          data: modifier_group_ids.map((gId: number) => ({
+            item_id: id,
+            modifier_group_id: gId
+          }))
+        });
+      }
     }
     
     return prisma.item.findUnique({ where: { id } });

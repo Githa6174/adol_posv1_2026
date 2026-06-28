@@ -55,9 +55,19 @@ export function KitchenMonitor() {
             
             <div className="p-6 flex-1 flex flex-col bg-surface/30">
               <div className="flex items-start justify-between mb-6 flex-1">
-                <div className="text-3xl font-bold leading-tight text-white">
+                <div className="text-3xl font-bold leading-tight text-white w-full">
                   <span className="text-brand-400 mr-4 text-4xl">{orderItem.quantity}x</span> 
                   {orderItem.item?.name}
+                  {orderItem.modifiers?.length > 0 && (
+                    <div className="mt-3 space-y-1.5 pl-12 border-l border-white/10 ml-2">
+                      {orderItem.modifiers.map((mod: any, mIdx: number) => (
+                        <div key={mIdx} className="text-lg text-brand-300 font-semibold flex items-center gap-1.5">
+                          <span className="material-icons text-base">add_circle</span>
+                          <span>{mod.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
               

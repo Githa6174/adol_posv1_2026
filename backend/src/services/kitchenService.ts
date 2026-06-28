@@ -10,7 +10,8 @@ export class KitchenService {
         item: true,
         order: {
           include: { table: true }
-        }
+        },
+        modifiers: true
       },
       orderBy: { created_at: 'asc' }
     });

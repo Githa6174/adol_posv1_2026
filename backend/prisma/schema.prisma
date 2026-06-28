@@ -120,6 +120,60 @@ model VariationOption {
   @@map("variation_options")
 }
 
+model ModifierGroup {
+  id              Int      @id @default(autoincrement())
+  name            String
+  is_required     Boolean  @default(false)
+  allow_multiple  Boolean  @default(false)
+  max_select      Int      @default(1)
+  print_on_receipt Boolean @default(true)
+  created_at      DateTime @default(now())
+  updated_at      DateTime @default(now())
+
+  options         ModifierOption[]
+  item_groups     ItemModifierGroup[]
+
+  @@map("modifier_groups")
+}
+
+model ModifierOption {
+  id                Int      @id @default(autoincrement())
+  modifier_group_id Int
+  name              String
+  price             Float    @default(0)
+
+  modifier_group    ModifierGroup @relation(fields: [modifier_group_id], references: [id], onDelete: Cascade)
+  order_modifiers   OrderItemModifier[]
+
+  @@map("modifier_options")
+}
+
+model ItemModifierGroup {
+  id                Int      @id @default(autoincrement())
+  item_id           Int
+  modifier_group_id Int
+
+  item              Item          @relation(fields: [item_id], references: [id], onDelete: Cascade)
+  modifier_group    ModifierGroup @relation(fields: [modifier_group_id], references: [id], onDelete: Cascade)
+
+  @@unique([item_id, modifier_group_id])
+  @@map("item_modifier_groups")
+}
+
+model OrderItemModifier {
+  id                 Int      @id @default(autoincrement())
+  order_item_id      Int
+  modifier_option_id Int
+  name               String
+  price              Float    @default(0)
+  print_on_receipt   Boolean  @default(true)
+
+  order_item         OrderItem      @relation(fields: [order_item_id], references: [id], onDelete: Cascade)
+  modifier_option    ModifierOption @relation(fields: [modifier_option_id], references: [id])
+
+  @@map("order_item_modifiers")
+}
+
 model Item {
   id                      Int      @id @default(autoincrement())
   type                    String?  @default("single") // single, variable, combo
@@ -165,6 +219,7 @@ model Item {
   
   order_items             OrderItem[]
   variations              ItemVariation[]
+  modifier_groups         ItemModifierGroup[]
 
   @@map("items")
 }
@@ -272,6 +327,7 @@ model OrderItem {
   order                Order?         @relation(fields: [order_id], references: [id], onDelete: Cascade)
   item                 Item?          @relation(fields: [item_id], references: [id])
   variation            ItemVariation? @relation(fields: [item_variation_id], references: [id])
+  modifiers            OrderItemModifier[]
 
   @@map("order_items")
 }
