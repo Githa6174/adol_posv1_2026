@@ -17,5 +17,9 @@ const fetchWithAuth = async (endpoint: string, options: RequestInit = {}) => {
 export const tableService = {
   getTables: () => fetchWithAuth('/tables'),
   getZones: () => fetchWithAuth('/tables/zones'),
+  createZone: (data: any) => fetchWithAuth('/tables/zones', { method: 'POST', body: JSON.stringify(data) }),
+  createTable: (data: any) => fetchWithAuth('/tables', { method: 'POST', body: JSON.stringify(data) }),
+  updateTable: (id: number, data: any) => fetchWithAuth(`/tables/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteTable: (id: number) => fetchWithAuth(`/tables/${id}`, { method: 'DELETE' }),
   updateStatus: (id: number, status: string) => fetchWithAuth(`/tables/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status }) })
 };

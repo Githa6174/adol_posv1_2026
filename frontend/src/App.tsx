@@ -18,6 +18,7 @@ import { Categories } from './pages/products/Categories';
 import { Departments } from './pages/products/Departments';
 import { EditProduct } from './pages/products/EditProduct';
 import { PrinterSettings } from './pages/PrinterSettings';
+import { TableSettings } from './pages/TableSettings';
 import { useAuthStore } from './stores/authStore';
 import { ToastContainer } from './components/Common/ToastContainer';
 
@@ -189,6 +190,14 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                 <span className="material-icons text-xl">print</span>
                 {!isCollapsed && <span className="whitespace-nowrap">Printer Settings</span>}
               </Link>
+              <Link 
+                to="/settings/tables" 
+                className={`flex items-center rounded-xl transition-all py-3 ${location.pathname === '/settings/tables' ? 'bg-brand-highlight text-brand-600 dark:text-brand-300 border border-brand-highlight font-bold' : 'border border-transparent text-text-muted hover:bg-surface-dark hover:text-text-main font-medium'} ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-4'}`}
+                title={isCollapsed ? "Atur Meja" : ""}
+              >
+                <span className="material-icons text-xl">architecture</span>
+                {!isCollapsed && <span className="whitespace-nowrap">Atur Meja</span>}
+              </Link>
             </>
           )}
         </nav>
@@ -281,6 +290,14 @@ function App() {
           element={
             <ProtectedRoute>
               <DashboardLayout><TableMap /></DashboardLayout>
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/settings/tables" 
+          element={
+            <ProtectedRoute>
+              <DashboardLayout><TableSettings /></DashboardLayout>
             </ProtectedRoute>
           } 
         />

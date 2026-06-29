@@ -12,3 +12,5 @@ tablesRouter.post('/zones', tableController.createZone);
 tablesRouter.get('/', tableController.getTables);
 tablesRouter.post('/', tableController.createTable);
 tablesRouter.patch('/:id/status', tableController.updateTableStatus);
+tablesRouter.put('/:id', tableController.updateTable);
+tablesRouter.delete('/:id', tableController.deleteTable);

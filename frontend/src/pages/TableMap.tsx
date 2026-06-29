@@ -9,6 +9,12 @@ const API_URL = 'http://localhost:3001/api';
 
 export function TableMap() {
   const [tables, setTables] = useState<any[]>([]);
+  const [zones, setZones] = useState<any[]>([]);
+  const [viewMode, setViewMode] = useState<'map' | 'grid'>(() => {
+    return (localStorage.getItem('table-map-view') as 'map' | 'grid') || 'map';
+  });
+  const [selectedZoneId, setSelectedZoneId] = useState<number | 'all'>('all');
+
   const [showPaxModal, setShowPaxModal] = useState(false);
   const [selectedTableLocal, setSelectedTableLocal] = useState<any>(null);
   const [pax, setPax] = useState(1);
@@ -47,6 +53,12 @@ export function TableMap() {
 
   const loadTables = () => {
     tableService.getTables().then(setTables).catch(console.error);
+    tableService.getZones().then(setZones).catch(console.error);
+  };
+
+  const handleViewModeChange = (mode: 'map' | 'grid') => {
+    setViewMode(mode);
+    localStorage.setItem('table-map-view', mode);
   };
 
   useEffect(() => {
@@ -248,32 +260,126 @@ export function TableMap() {
   const sisaTagihan = (billingOrder?.grand_total || 0) - currentTotalPaid;
   const changeAmount = cashAmount - sisaTagihan;
 
+  const filteredTables = selectedZoneId === 'all'
+    ? tables
+    : tables.filter(t => t.zone_id === Number(selectedZoneId));
+
   return (
     <>
     <div className="p-8 h-full overflow-y-auto no-print">
-      <h1 className="text-4xl font-extrabold mb-8 text-brand-600">Peta Meja</h1>
-      
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
-        {tables.map(table => (
-          <button
-            key={table.id}
-            onClick={() => handleTableClick(table)}
-            className={`glass-card p-6 flex flex-col items-center justify-center h-36 focus:outline-none relative overflow-hidden group
-              ${table.status === 'available' ? 'hover:border-green-400/50 hover:shadow-green-500/20' : 'hover:border-red-400/50 hover:shadow-red-500/20 opacity-80'}`}
-          >
-            {/* Glowing Indicator */}
-            <div className={`absolute -top-10 -right-10 w-24 h-24 rounded-full blur-2xl transition-all group-hover:scale-150 
-              ${table.status === 'available' ? 'bg-green-500/20' : 'bg-red-500/20'}`}></div>
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-8">
+        <div>
+          <h1 className="text-4xl font-extrabold text-brand-600">Peta Meja</h1>
+          <p className="text-text-muted mt-1">Pilih meja untuk pesanan baru atau lihat tagihan pembayaran.</p>
+        </div>
 
-            <span className="text-3xl font-black text-text-main relative z-10">{table.table_number}</span>
-            <span className={`mt-2 font-bold tracking-wider text-sm relative z-10 
-              ${table.status === 'available' ? 'text-green-400' : 'text-red-400'}`}>
-              {table.status === 'available' ? 'KOSONG' : 'TERISI'}
-            </span>
-            <span className="text-xs text-text-muted mt-1 relative z-10 font-medium">Pax: {table.capacity}</span>
-          </button>
-        ))}
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-1.5 bg-surface border border-border rounded-xl px-3 py-1.5 text-sm">
+            <span className="material-icons text-text-muted text-base">layers</span>
+            <select
+              value={selectedZoneId}
+              onChange={(e) => setSelectedZoneId(e.target.value === 'all' ? 'all' : Number(e.target.value))}
+              className="bg-transparent border-none text-text-main focus:outline-none font-semibold cursor-pointer"
+            >
+              <option value="all">Semua Area</option>
+              {zones.map(z => (
+                <option key={z.id} value={z.id}>{z.name}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex bg-surface-dark border border-border rounded-xl p-1">
+            <button
+              onClick={() => handleViewModeChange('map')}
+              className={`px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-1.5 transition-all ${viewMode === 'map' ? 'bg-surface text-brand-600 border border-border shadow-sm' : 'text-text-muted hover:text-text-main'}`}
+            >
+              <span className="material-icons text-lg">map</span> Peta
+            </button>
+            <button
+              onClick={() => handleViewModeChange('grid')}
+              className={`px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-1.5 transition-all ${viewMode === 'grid' ? 'bg-surface text-brand-600 border border-border shadow-sm' : 'text-text-muted hover:text-text-main'}`}
+            >
+              <span className="material-icons text-lg">grid_view</span> Grid
+            </button>
+          </div>
+
+          {user?.role === 'admin' && (
+            <button
+              onClick={() => navigate('/settings/tables')}
+              className="btn-secondary px-4 py-2 text-sm flex items-center gap-1.5"
+            >
+              <span className="material-icons text-lg">architecture</span> Atur Meja
+            </button>
+          )}
+        </div>
       </div>
+
+      {viewMode === 'map' ? (
+        <div className="overflow-auto border border-border rounded-2xl bg-surface-dark/20 p-4 flex justify-center">
+          <div
+            className="relative bg-surface border border-border shadow-inner"
+            style={{
+              width: '900px',
+              height: '550px',
+              backgroundImage: 'radial-gradient(circle, var(--color-border) 1px, transparent 1px)',
+              backgroundSize: '20px 20px'
+            }}
+          >
+            {filteredTables.map(table => {
+              const isCircle = table.shape === 'circle';
+              return (
+                <button
+                  key={table.id}
+                  onClick={() => handleTableClick(table)}
+                  className={`absolute flex flex-col items-center justify-center border focus:outline-none overflow-hidden group transition-all duration-200 shadow-sm
+                    ${table.status === 'available'
+                      ? 'border-border bg-surface-light hover:border-green-400 hover:shadow-lg hover:shadow-green-500/10'
+                      : 'border-red-400/30 bg-red-500/5 hover:border-red-400 hover:shadow-lg hover:shadow-red-500/10'
+                    }
+                    ${isCircle ? 'rounded-full' : 'rounded-2xl'}`}
+                  style={{
+                    left: `${table.x_position || 0}px`,
+                    top: `${table.y_position || 0}px`,
+                    width: `${table.width || 100}px`,
+                    height: `${table.height || 100}px`
+                  }}
+                >
+                  <div className={`absolute -top-10 -right-10 w-20 h-20 rounded-full blur-2xl transition-all group-hover:scale-150 
+                    ${table.status === 'available' ? 'bg-green-500/10' : 'bg-red-500/10'}`}></div>
+
+                  <span className="text-2xl font-black text-text-main relative z-10">{table.table_number}</span>
+                  <span className={`mt-1 font-bold tracking-wider text-[10px] relative z-10 
+                    ${table.status === 'available' ? 'text-green-500' : 'text-red-500'}`}>
+                    {table.status === 'available' ? 'KOSONG' : 'TERISI'}
+                  </span>
+                  <span className="text-[10px] text-text-muted mt-0.5 relative z-10 font-semibold">Pax: {table.capacity}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+          {filteredTables.map(table => (
+            <button
+              key={table.id}
+              onClick={() => handleTableClick(table)}
+              className={`glass-card p-6 flex flex-col items-center justify-center h-36 focus:outline-none relative overflow-hidden group
+                ${table.status === 'available' ? 'hover:border-green-400/50 hover:shadow-green-500/20' : 'hover:border-red-400/50 hover:shadow-red-500/20 opacity-80'}`}
+            >
+              <div className={`absolute -top-10 -right-10 w-24 h-24 rounded-full blur-2xl transition-all group-hover:scale-150 
+                ${table.status === 'available' ? 'bg-green-500/20' : 'bg-red-500/20'}`}></div>
+
+              <span className="text-3xl font-black text-text-main relative z-10">{table.table_number}</span>
+              <span className={`mt-2 font-bold tracking-wider text-sm relative z-10 
+                ${table.status === 'available' ? 'text-green-400' : 'text-red-400'}`}>
+                {table.status === 'available' ? 'KOSONG' : 'TERISI'}
+              </span>
+              <span className="text-xs text-text-muted mt-1 relative z-10 font-medium">Pax: {table.capacity}</span>
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Modal Aksi Meja Terisi */}
       {showActionModal && (

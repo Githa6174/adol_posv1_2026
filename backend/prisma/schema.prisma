@@ -258,6 +258,11 @@ model Table {
   capacity     Int?     @default(4)
   status       String?  @default("available")
   is_active    Boolean? @default(true)
+  x_position   Float?   @default(0)
+  y_position   Float?   @default(0)
+  width        Float?   @default(100)
+  height       Float?   @default(100)
+  shape        String?  @default("rectangle")
   created_at   DateTime @default(now())
   updated_at   DateTime @default(now())
 
